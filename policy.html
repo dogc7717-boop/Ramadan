@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سياسات التطبيق</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body class="dark-theme">
+  <div class="container">
+    <div class="card glass">
+      <h2>سياسات التطبيق</h2>
+      <p>ضع نص السياسات هنا لاحقًا...</p>
+
+      <label>
+        <input type="checkbox" id="agree"> أوافق على السياسات
+      </label>
+
+      <button onclick="acceptPolicy()">موافق</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    async function acceptPolicy(){
+      if(!document.getElementById("agree").checked){
+        alert("يجب الموافقة أولًا");
+        return;
+      }
+
+      const { data: { user } } = await sb.auth.getUser();
+
+      await sb.from("profiles")
+        .update({ accepted_policy: true })
+        .eq("id", user.id);
+
+      window.location.href = "dashboard.html";
+    }
+  </script>
+</body>
+</html>
