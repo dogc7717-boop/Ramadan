@@ -1,85 +1,34 @@
-// ===============================
-// Supabase Init
-// ===============================
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+// ⚠️ بدّل السطرين دول بس
+const SUPABASE_URL = "PUT_YOUR_PROJECT_URL_HERE";
+const SUPABASE_KEY = "PUT_YOUR_ANON_PUBLIC_KEY_HERE";
 
-const SUPABASE_URL = "PUT_YOUR_URL_HERE";
-const SUPABASE_ANON_KEY = "PUT_YOUR_KEY_HERE";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// ===============================
-// UI Message Handler
-// ===============================
-function showMessage(text, type = "error") {
-  const box = document.getElementById("auth-message");
-  if (!box) return;
-
-  box.textContent = text;
-  box.className = `auth-message ${type}`;
-  box.classList.remove("hidden");
-}
-
-// ===============================
-// Signup
-// ===============================
-async function signup(email, password) {
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-  });
-
-  if (error) {
-    if (error.message.includes("rate limit")) {
-      showMessage("⏳ تم المحاولة كثيرًا، انتظر قليلًا ثم أعد المحاولة");
-    } else {
-      showMessage("⚠️ فشل إنشاء الحساب، حاول لاحقًا");
-    }
-    return;
-  }
-
-  showMessage(
-    "📩 تم إرسال رسالة تأكيد إلى بريدك الإلكتروني، افتحها لتفعيل الحساب",
-    "success"
-  );
-}
-
-// ===============================
-// Login
-// ===============================
-async function login(email, password) {
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (error) {
-    if (error.message.includes("Invalid login")) {
-      showMessage("❌ البريد أو كلمة المرور غير صحيحة");
-    } else if (error.message.includes("Email not confirmed")) {
-      showMessage("📩 يجب تأكيد البريد الإلكتروني أولًا");
-    } else if (error.message.includes("rate limit")) {
-      showMessage("⏳ تم المحاولة كثيرًا، انتظر قليلًا");
-    } else {
-      showMessage("⚠️ حدث خطأ غير متوقع");
-    }
-    return;
-  }
-
+// Auth
+async function login(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  if(error) return alert(error.message);
   window.location.href = "dashboard.html";
 }
 
-// ===============================
-// Logout
-// ===============================
-async function logout() {
-  await supabase.auth.signOut();
-  window.location.href = "index.html";
+async function register(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const { error } = await sb.auth.signUp({ email, password });
+  if(error) return alert(error.message);
+  alert("تم التسجيل، سجل دخولك الآن");
 }
 
-// ===============================
-// Expose functions
-// ===============================
-window.signup = signup;
-window.login = login;
-window.logout = logout;
+// Theme
+function toggleTheme(){
+  const b = document.body;
+  b.classList.toggle("light-theme");
+  localStorage.setItem("theme", b.classList.contains("light-theme") ? "light" : "dark");
+}
+(function(){
+  if(localStorage.getItem("theme")==="light"){
+    document.body.classList.add("light-theme");
+  }
+})();
