@@ -5,11 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>تسجيل / دخول</title>
   <link rel="stylesheet" href="style.css"/>
-
-  <!-- Supabase (مرة واحدة فقط) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
-
 <body class="dark-theme">
   <div class="container">
     <div class="card glass">
@@ -19,21 +16,13 @@
       <input id="email" type="email" placeholder="البريد الإلكتروني"/>
       <input id="password" type="password" placeholder="كلمة المرور"/>
 
-      <button onclick="signIn(
-        document.getElementById('email').value,
-        document.getElementById('password').value
-      )">دخول</button>
-
-      <button class="secondary" onclick="signUp(
-        document.getElementById('email').value,
-        document.getElementById('password').value
-      )">تسجيل جديد</button>
+      <button onclick="login()">دخول</button>
+      <button class="secondary" onclick="register()">تسجيل جديد</button>
 
       <div class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</div>
     </div>
   </div>
 
-  <!-- App -->
   <script src="app.js"></script>
 </body>
-  </html>
+</html>
