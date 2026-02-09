@@ -1,6 +1,6 @@
 // ⚠️ بدّل السطرين دول بس
-const SUPABASE_URL = "PUT_YOUR_PROJECT_URL_HERE";
-const SUPABASE_KEY = "PUT_YOUR_ANON_PUBLIC_KEY_HERE";
+const SUPABASE_URL = "https://dxqpttiffkdrtbwzmvcd.supabase.co";
+const SUPABASE_KEY = "sb_publishable_CWdAdibfoDfxUpALqTyOHQ_Jltfbggt";
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
