@@ -1,56 +1,85 @@
-// ==================
-// Supabase init (NO import)
-// ==================
-const SUPABASE_URL = "https://dxqpttiffkdrtbwzmvcd.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_CWdAdibfoDfxUpALqTyOHQ_Jltfbggt";
+// ===============================
+// Supabase Init
+// ===============================
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = supabase.createClient
+const SUPABASE_URL = "PUT_YOUR_URL_HERE";
+const SUPABASE_ANON_KEY = "PUT_YOUR_KEY_HERE";
 
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// ==================
-// Messages
-// ==================
-function showMessage(msg) {
-  alert(msg); // مؤقتًا – هنجمّله بعدين
+// ===============================
+// UI Message Handler
+// ===============================
+function showMessage(text, type = "error") {
+  const box = document.getElementById("auth-message");
+  if (!box) return;
+
+  box.textContent = text;
+  box.className = `auth-message ${type}`;
+  box.classList.remove("hidden");
 }
 
-// ==================
-// Sign Up
-// ==================
-async function signUp(email, password) {
+// ===============================
+// Signup
+// ===============================
+async function signup(email, password) {
   const { error } = await supabase.auth.signUp({
     email,
     password,
   });
 
   if (error) {
-    showMessage(error.message);
-  } else {
-    showMessage("تم إرسال رسالة تأكيد للإيميل");
+    if (error.message.includes("rate limit")) {
+      showMessage("⏳ تم المحاولة كثيرًا، انتظر قليلًا ثم أعد المحاولة");
+    } else {
+      showMessage("⚠️ فشل إنشاء الحساب، حاول لاحقًا");
+    }
+    return;
   }
+
+  showMessage(
+    "📩 تم إرسال رسالة تأكيد إلى بريدك الإلكتروني، افتحها لتفعيل الحساب",
+    "success"
+  );
 }
 
-// ==================
-// Sign In
-// ==================
-async function signIn(email, password) {
+// ===============================
+// Login
+// ===============================
+async function login(email, password) {
   const { error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
   if (error) {
-    showMessage("خطأ في الدخول");
-  } else {
-    window.location.href = "dashboard.html";
+    if (error.message.includes("Invalid login")) {
+      showMessage("❌ البريد أو كلمة المرور غير صحيحة");
+    } else if (error.message.includes("Email not confirmed")) {
+      showMessage("📩 يجب تأكيد البريد الإلكتروني أولًا");
+    } else if (error.message.includes("rate limit")) {
+      showMessage("⏳ تم المحاولة كثيرًا، انتظر قليلًا");
+    } else {
+      showMessage("⚠️ حدث خطأ غير متوقع");
+    }
+    return;
   }
+
+  window.location.href = "dashboard.html";
 }
 
-// ==================
-// Expose
-// ==================
-window.signUp = signUp;
-window.signIn = signIn;
+// ===============================
+// Logout
+// ===============================
+async function logout() {
+  await supabase.auth.signOut();
+  window.location.href = "index.html";
+}
+
+// ===============================
+// Expose functions
+// ===============================
+window.signup = signup;
+window.login = login;
+window.logout = logout;
