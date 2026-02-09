@@ -20,36 +20,23 @@
 
   <script src="app.js"></script>
   <script>
-    async function loadProfile(){
+    async function loadProfile() {
       const { data: { user } } = await sb.auth.getUser();
-      if(!user){
+
+      if (!user) {
         window.location.href = "index.html";
         return;
       }
 
-      const { data } = await sb
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-      if(!data.accepted_policy){
-        document.getElementById("status").innerText =
-          "لازم توافق على سياسات التطبيق";
-      } else if(!data.is_active){
-        document.getElementById("status").innerText =
-          "حسابك غير مفعل، انتظر كود التفعيل";
-      } else {
-        document.getElementById("status").innerText =
-          "حسابك مفعل ✔️";
-      }
+      document.getElementById("status").innerText =
+        "تم تسجيل الدخول بنجاح ✔️";
     }
 
-    function goPolicy(){
+    function goPolicy() {
       window.location.href = "policy.html";
     }
 
-    async function logout(){
+    async function logout() {
       await sb.auth.signOut();
       window.location.href = "index.html";
     }
@@ -57,4 +44,4 @@
     loadProfile();
   </script>
 </body>
-  </html>
+</html>
