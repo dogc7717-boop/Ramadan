@@ -14,20 +14,7 @@
 
       <h2>لوحة التحكم</h2>
 
-      <p id="welcome">جارٍ التحميل...</p>
-      <p id="status"></p>
-
-      <!-- صندوق السياسات -->
-      <div id="policyBox" style="display:none; margin-top:15px;">
-        <label style="display:flex; gap:8px; align-items:center;">
-          <input type="checkbox" id="policyCheck">
-          أوافق على <a href="policy.html" target="_blank">سياسات التطبيق</a>
-        </label>
-
-        <button onclick="acceptPolicy()" style="margin-top:10px;">
-          تأكيد الموافقة
-        </button>
-      </div>
+      <p id="status">جارٍ التحميل...</p>
 
       <button onclick="logout()" class="secondary" style="margin-top:15px;">
         تسجيل خروج
@@ -39,59 +26,36 @@
   <script src="app.js"></script>
 
   <script>
-    async function loadProfile() {
+    async function protectDashboard() {
       const { data: { user } } = await sb.auth.getUser();
 
+      // 1️⃣ مش مسجل دخول
       if (!user) {
         window.location.href = "index.html";
         return;
       }
 
-      document.getElementById("welcome").innerText =
-        "مرحبًا 👋 " + user.email;
-
-      const { data, error } = await sb
+      const { data: profile, error } = await sb
         .from("profiles")
-        .select("*")
+        .select("accepted_policy, is_active")
         .eq("id", user.id)
         .single();
 
-      if (error || !data) {
+      if (error || !profile) {
         document.getElementById("status").innerText =
           "خطأ في تحميل بيانات الحساب";
         return;
       }
 
-      if (!data.accepted_policy) {
-        document.getElementById("status").innerText =
-          "يجب الموافقة على سياسات التطبيق";
-        document.getElementById("policyBox").style.display = "block";
-      } else {
-        document.getElementById("status").innerText =
-          "تم تسجيل الدخول بنجاح ✔️";
-      }
-    }
-
-    async function acceptPolicy() {
-      const check = document.getElementById("policyCheck");
-      if (!check.checked) {
-        alert("لازم توافق على السياسات الأول");
+      // 2️⃣ لم يوافق على السياسات
+      if (!profile.accepted_policy) {
+        window.location.href = "policy.html";
         return;
       }
 
-      const { data: { user } } = await sb.auth.getUser();
-
-      await sb
-        .from("profiles")
-        .update({
-          accepted_policy: true,
-          accepted_policy_at: new Date().toISOString()
-        })
-        .eq("id", user.id);
-
-      document.getElementById("policyBox").style.display = "none";
+      // 3️⃣ غير مفعل (نجهز لها في الخطوة 4)
       document.getElementById("status").innerText =
-        "تمت الموافقة على السياسات ✔️";
+        "مرحبًا 👋 تم الدخول بنجاح";
     }
 
     async function logout() {
@@ -99,7 +63,7 @@
       window.location.href = "index.html";
     }
 
-    loadProfile();
+    protectDashboard();
   </script>
 </body>
-  </html>
+</html>
