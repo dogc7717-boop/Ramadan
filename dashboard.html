@@ -7,45 +7,91 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
+
 <body class="dark-theme">
   <div class="container">
     <div class="card glass">
+
       <h2>لوحة التحكم</h2>
 
-      <p id="status">جارٍ التحميل...</p>
+      <p id="welcome">جارٍ التحميل...</p>
+      <p id="status"></p>
 
-      <button onclick="goPolicy()">سياسات التطبيق</button>
-      <button onclick="logout()" class="secondary">تسجيل خروج</button>
+      <!-- صندوق السياسات -->
+      <div id="policyBox" style="display:none; margin-top:15px;">
+        <label style="display:flex; gap:8px; align-items:center;">
+          <input type="checkbox" id="policyCheck">
+          أوافق على <a href="policy.html" target="_blank">سياسات التطبيق</a>
+        </label>
+
+        <button onclick="acceptPolicy()" style="margin-top:10px;">
+          تأكيد الموافقة
+        </button>
+      </div>
+
+      <button onclick="logout()" class="secondary" style="margin-top:15px;">
+        تسجيل خروج
+      </button>
+
     </div>
   </div>
 
   <script src="app.js"></script>
+
   <script>
     async function loadProfile() {
-      // تأكد إن Supabase جاهز
-      if (!window.sb) {
-        setTimeout(loadProfile, 100);
-        return;
-      }
+      const { data: { user } } = await sb.auth.getUser();
 
-      const { data, error } = await sb.auth.getUser();
-
-      if (error || !data.user) {
+      if (!user) {
         window.location.href = "index.html";
         return;
       }
 
-      const user = data.user;
+      document.getElementById("welcome").innerText =
+        "مرحبًا 👋 " + user.email;
 
-      document.getElementById("status").innerHTML = `
-        <strong>مرحبًا 👋</strong><br>
-        <span style="opacity:.8">${user.email}</span><br><br>
-        <span style="color:#4ade80">تم تسجيل الدخول بنجاح ✔️</span>
-      `;
+      const { data, error } = await sb
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (error || !data) {
+        document.getElementById("status").innerText =
+          "خطأ في تحميل بيانات الحساب";
+        return;
+      }
+
+      if (!data.accepted_policy) {
+        document.getElementById("status").innerText =
+          "يجب الموافقة على سياسات التطبيق";
+        document.getElementById("policyBox").style.display = "block";
+      } else {
+        document.getElementById("status").innerText =
+          "تم تسجيل الدخول بنجاح ✔️";
+      }
     }
 
-    function goPolicy() {
-      window.location.href = "policy.html";
+    async function acceptPolicy() {
+      const check = document.getElementById("policyCheck");
+      if (!check.checked) {
+        alert("لازم توافق على السياسات الأول");
+        return;
+      }
+
+      const { data: { user } } = await sb.auth.getUser();
+
+      await sb
+        .from("profiles")
+        .update({
+          accepted_policy: true,
+          accepted_policy_at: new Date().toISOString()
+        })
+        .eq("id", user.id);
+
+      document.getElementById("policyBox").style.display = "none";
+      document.getElementById("status").innerText =
+        "تمت الموافقة على السياسات ✔️";
     }
 
     async function logout() {
@@ -56,4 +102,4 @@
     loadProfile();
   </script>
 </body>
-</html>
+  </html>
