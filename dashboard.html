@@ -11,8 +11,10 @@
   <div class="container">
     <div class="card glass">
       <h2>لوحة التحكم</h2>
+
       <p id="status">جارٍ التحميل...</p>
 
+      <button onclick="goPolicy()">سياسات التطبيق</button>
       <button onclick="logout()" class="secondary">تسجيل خروج</button>
     </div>
   </div>
@@ -20,18 +22,30 @@
   <script src="app.js"></script>
   <script>
     async function loadProfile() {
-      const { data: { user } } = await sb.auth.getUser();
+      // تأكد إن Supabase جاهز
+      if (!window.sb) {
+        setTimeout(loadProfile, 100);
+        return;
+      }
 
-      if (!user) {
+      const { data, error } = await sb.auth.getUser();
+
+      if (error || !data.user) {
         window.location.href = "index.html";
         return;
       }
+
+      const user = data.user;
 
       document.getElementById("status").innerHTML = `
         <strong>مرحبًا 👋</strong><br>
         <span style="opacity:.8">${user.email}</span><br><br>
         <span style="color:#4ade80">تم تسجيل الدخول بنجاح ✔️</span>
       `;
+    }
+
+    function goPolicy() {
+      window.location.href = "policy.html";
     }
 
     async function logout() {
