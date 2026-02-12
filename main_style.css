@@ -6,50 +6,41 @@ body {
   min-height: 100vh;
 }
 
-/* Navbar علوي */
+/* Navbar علوي ثابت */
 .navbar {
   position: sticky;
   top: 0;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   background: rgba(50,50,80,0.95);
-  padding: 10px 5px;
+  padding: 8px 5px;
   z-index: 100;
-  flex-wrap: wrap;
   gap: 6px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  flex-wrap: nowrap; /* صف واحد دائمًا */
 }
 
+/* أزرار أصغر */
 .navbar button {
-  background: linear-gradient(90deg,#6a5cff,#9f7cff);
-  border: none;
-  border-radius: 8px;
-  padding: 8px 12px;
+  flex: 1 1 auto;
+  min-width: 80px;
+  max-width: 120px;
+  padding: 6px 8px;
+  font-size: 14px;
+  border-radius: 6px;
   font-weight: bold;
   color: #fff;
+  background: linear-gradient(90deg,#6a5cff,#9f7cff);
   cursor: pointer;
-  flex: 1 1 30%; /* عرض مرن للأزرار */
   text-align: center;
   transition: 0.3s;
 }
 
-.navbar button:hover {
-  filter: brightness(1.2);
-}
-
-.navbar button.active {
-  background: #ff6a6a;
-  box-shadow: 0 0 10px rgba(255,100,100,0.6);
-}
-
-.navbar button.logout {
-  background: #555;
-}
-
-.navbar button.logout:hover {
-  background: #777;
-}
+.navbar button:hover { filter: brightness(1.2); }
+.navbar button.active { background: #ff6a6a; box-shadow: 0 0 8px rgba(255,100,100,0.6); }
+.navbar button.logout { background: #555; }
+.navbar button.logout:hover { background: #777; }
 
 /* Container & tabs */
 .container { max-width:1200px; margin:20px auto; padding:0 12px; }
@@ -62,19 +53,27 @@ body {
 .card { background: rgba(255,255,255,0.08); padding:12px; margin-bottom:12px; border-radius:12px; }
 
 /* Game elements */
-#gameContainer { width:100%; height:600px; background:#000; border-radius:14px; overflow:hidden; }
+#game input, #game button { width: 100%; margin-top:10px; padding:12px; border-radius:12px; border:none; font-size:15px; box-sizing:border-box; }
+#result { margin-top:15px; font-size:16px; min-height:40px; color:#00BFFF; font-weight:bold; }
 .verse-list { margin-top:10px; display:flex; flex-direction:column; gap:10px; }
-.verse-item { background:#222; border-radius:25px; padding:15px 20px; cursor:pointer; transition:0.25s; }
+.verse-item { background:#222; border-radius:20px; padding:12px 15px; cursor:pointer; transition: transform 0.25s, background 0.25s; }
 .verse-item:hover { background:#007BFF; }
-.verse-item.expanded { transform:scale(1.05); }
-.counters { font-size:18px; margin:15px 0; display:flex; gap:20px; flex-wrap: wrap; }
-.counter-box { display:inline-block; width:40px; height:40px; line-height:40px; text-align:center; margin:2px; font-weight:bold; background:#007BFF; border-radius:6px; }
+.verse-item.expanded { transform:scale(1.03); }
 
-/* Subscription counts */
-.count { color:#ffcc00; font-weight:bold; margin-top:6px; }
+/* أزرار التسبيح */
+.tasbeeh-buttons { display:flex; justify-content:space-between; margin-top:15px; flex-wrap:wrap; gap:10px; }
+.tasbeeh-block { flex:1 1 30%; display:flex; flex-direction:column; align-items:center; }
+.tasbeeh-btn { width:100%; padding:12px; border-radius:10px; font-weight:bold; background:linear-gradient(45deg,#007BFF,#00BFFF); color:#fff; cursor:pointer; }
 
-/* Responsive للموبايل */
-@media (max-width:768px){
-  .navbar button { flex: 1 1 45%; margin-bottom: 5px; }
-  #gameContainer { height:400px; }
+/* العدادات */
+.counters { display:flex; justify-content:space-between; flex-wrap:wrap; margin-top:15px; gap:10px; font-size:16px; }
+.counter-box { display:inline-block; width:35px; height:35px; line-height:35px; text-align:center; margin:2px; font-weight:bold; background:#007BFF; border-radius:6px; }
+
+/* زر مسح العداد الدائم */
+#resetTotal { margin-top:15px; width:100%; padding:12px; border:none; border-radius:10px; font-size:15px; background:#ff4444; color:#fff; cursor:pointer; }
+
+/* Responsive */
+@media(max-width:768px){
+  .tasbeeh-block { flex:1 1 48%; } 
+  .navbar button { flex:1 1 48%; font-size:13px; margin-bottom:5px; }
   }
