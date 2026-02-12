@@ -1,59 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>صفحة اللعبة</title>
-  <link rel="stylesheet" href="game_style.css">
-</head>
-<body>
-
-<div class="main">
-  <div class="card">
-
-    <input id="textInput" placeholder="اكتب كلمة للبحث">
-    <button id="btn">عرض النتائج</button>
-
-    <div id="result" class="result"></div>
-    <div id="verseList" class="verse-list"></div>
-
-    <div class="tasbeeh-buttons">
-      <div class="tasbeeh-block">
-        <button class="tasbeeh-btn" data-index="0">سبحان الله</button>
-        <div class="sub-counter" id="subCount0">0</div>
-      </div>
-
-      <div class="tasbeeh-block">
-        <button class="tasbeeh-btn" data-index="1">الحمد لله</button>
-        <div class="sub-counter" id="subCount1">0</div>
-      </div>
-
-      <div class="tasbeeh-block">
-        <button class="tasbeeh-btn" data-index="2">الله أكبر</button>
-        <div class="sub-counter" id="subCount2">0</div>
-      </div>
-    </div>
-
-    <div class="counters">
-      <p>عداد الجلسة : <span id="sessionCount"></span></p>
-      <p>عداد دائم : <span id="totalCount"></span></p>
-    </div>
-
-    <button id="resetTotal">مسح العداد الدائم</button>
-    <button onclick="window.location.href='dashboard_page.html'">
-      رجوع للداشبورد
-    </button>
-
-  </div>
-</div>
-
-<div id="popup" class="popup">
-  <div class="popupCard">
-    🌿 تم إنهاء 99 تسبيحة<br>
-    تم تصفير عداد الجلسة
-  </div>
-</div>
-
-<script src="game_script.js"></script>
-</body>
-</html>
