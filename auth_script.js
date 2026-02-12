@@ -37,7 +37,7 @@ function signupUser() {
   localStorage.setItem("users", JSON.stringify(users));
 
   alert("تم التسجيل بنجاح");
-  window.location.href = "login_page.html";
+  window.location.href = "index.html";
 }
 
 // ===== تسجيل دخول =====
@@ -72,7 +72,7 @@ if (loginForm) {
 function acceptPolicy() {
   let user = JSON.parse(localStorage.getItem("currentUser"));
   if (!user) {
-    window.location.href = "login_page.html";
+    window.location.href = "index.html";
     return;
   }
 
@@ -90,5 +90,5 @@ function acceptPolicy() {
 // ===== رفض السياسة =====
 function rejectPolicy() {
   localStorage.removeItem("currentUser");
-  window.location.href = "login_page.html";
+  window.location.href = "index.html";
 }
