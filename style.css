@@ -152,4 +152,4 @@ a { color: inherit; text-decoration:none; }
 @media (max-width:768px){
   .navbar { flex-wrap: wrap; gap:6px; padding:10px; }
   #gameContainer { height:400px; }
-  }
+   }
