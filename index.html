@@ -7,19 +7,16 @@
 <link rel="stylesheet" href="main_style.css">
 </head>
 <body>
+<div class="card">
+  <h2>تسجيل دخول</h2>
 
-<div class="container">
-  <div class="card">
-    <h2>تسجيل دخول</h2>
+  <form id="loginForm">
+    <input type="text" id="loginPhone" placeholder="رقم الهاتف (01xxxxxxxxx)" required>
+    <input type="password" id="loginPassword" placeholder="كلمة المرور" required>
+    <button type="submit">دخول</button>
+  </form>
 
-    <form id="loginForm">
-      <input type="text" id="loginPhone" placeholder="رقم الهاتف (01xxxxxxxxx)" required>
-      <input type="password" id="loginPassword" placeholder="كلمة المرور" required>
-      <button type="submit">دخول</button>
-    </form>
-
-    <p>ليس لديك حساب؟ <a href="signup_page.html">تسجيل جديد</a></p>
-  </div>
+  <p>ليس لديك حساب؟ <a href="signup_page.html">تسجيل</a></p>
 </div>
 
 <script src="auth_script.js"></script>
