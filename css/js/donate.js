@@ -1,19 +1,24 @@
-window.onload=function(){
-document.getElementById("donateTextDisplay").innerText=
-localStorage.getItem("donateText")||"";
+function saveDonate() {
 
-document.getElementById("donatePhoneDisplay").innerText=
-localStorage.getItem("donatePhone")||"";
+    const text = document.getElementById("topTextInput").value;
+    const phone = document.getElementById("phoneInput").value;
+
+    localStorage.setItem("donateText", text);
+    localStorage.setItem("donatePhone", phone);
+
+    document.getElementById("fixedText").innerText = text;
 }
 
-function updateDonateText(){
-let val=document.getElementById("donateTextInput").value;
-localStorage.setItem("donateText",val);
-document.getElementById("donateTextDisplay").innerText=val;
-}
+window.onload = function() {
 
-function updateDonatePhone(){
-let val=document.getElementById("donatePhoneInput").value;
-localStorage.setItem("donatePhone",val);
-document.getElementById("donatePhoneDisplay").innerText=val;
+    const savedText = localStorage.getItem("donateText");
+    const savedPhone = localStorage.getItem("donatePhone");
+
+    if(savedText){
+        document.getElementById("fixedText").innerText = savedText;
+    }
+
+    if(savedPhone){
+        document.getElementById("phoneInput").value = savedPhone;
+    }
 }
