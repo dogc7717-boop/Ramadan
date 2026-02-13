@@ -1,119 +1,17 @@
-body {
-    margin: 0;
-    font-family: 'Cairo', sans-serif;
-    background: linear-gradient(135deg, #0f172a, #1e293b);
-    color: white;
-    text-align: center;
+.donate-glass{
+    height:300px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(15px);
+    border-radius:25px;
+    margin-top:40px;
+    font-size:22px;
 }
 
-.container {
-    width: 95%;
-    max-width: 420px;
-    margin: auto;
-    padding: 20px;
+.donate-footer{
+    margin-top:20px;
+    opacity:0.8;
+    font-size:14px;
 }
-
-.card {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 20px;
-    margin-top: 20px;
-}
-
-.zikr-btn {
-    background: linear-gradient(45deg, #facc15, #f59e0b);
-    border: none;
-    border-radius: 15px;
-    padding: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%;
-}
-
-.reset-btn {
-    background: red;
-    border: none;
-    border-radius: 10px;
-    padding: 8px;
-    color: white;
-    margin-top: 8px;
-}
-
-header{
-padding:20px;
-font-size:22px;
-background:#111827;
-}
-
-nav a{
-color:#facc15;
-margin:0 10px;
-text-decoration:none;
-}
-
-.container{
-padding:20px;
-}
-
-.card{
-background:rgba(255,255,255,0.08);
-padding:20px;
-margin:20px auto;
-border-radius:15px;
-max-width:600px;
-}
-
-.buttons{
-display:flex;
-justify-content:space-between;
-gap:10px;
-flex-wrap: wrap;
-}
-
-.button{
-padding:10px 15px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-background:linear-gradient(45deg,#facc15,orange);
-}
-
-.reset{
-margin-top:15px;
-background:red;
-color:white;
-}
-
-.count{
-margin-top:5px;
-font-size:20px;
-color:#22c55e;
-}
-
-input{
-margin-top:5px;
-padding:5px;
-border-radius:8px;
-border:none;
-text-align:center;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-background:white;
-color:black;
-}
-
-th,td{
-border:1px solid black;
-padding:5px;
-}
-
-.display{
-margin-top:10px;
-font-size:18px;
-font-weight:bold;
-color:#22c55e;
-                           }
