@@ -22,7 +22,9 @@ function reset(num){
 // ======= نافذة الإعدادات =======
 function toggleSettings(){
     const panel = document.getElementById("settingsPanel");
-    if(panel) panel.style.right = panel.style.right === "0px" ? "-300px" : "0px";
+    if(panel){
+        panel.style.right = panel.style.right === "0px" ? "-320px" : "0px";
+    }
 }
 
 // ======= الخلفية =======
@@ -51,7 +53,7 @@ window.addEventListener("load", function(){
     const audioSrc = localStorage.getItem("adhanAudio");
     if(audioSrc){
         let audio = new Audio(audioSrc);
-        window.audio = audio; // لتشغيل لاحق
+        window.audio = audio;
     }
 });
 
@@ -82,4 +84,4 @@ function saveAudio(){
 // ======= تشغيل الصوت عند الحاجة =======
 function playAudio(){
     if(window.audio) window.audio.play();
-      }
+           }
