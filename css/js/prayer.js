@@ -1,51 +1,66 @@
-const days=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
-const prayers=["الفجر","الظهر","العصر","المغرب","العشاء"];
+/* ==============================
+   prayer.js - صفحة مواعيد الصلاة
+============================== */
 
-const tbody=document.querySelector("#prayerTable tbody");
-let data=JSON.parse(localStorage.getItem("prayers")||"{}");
+// قراءة المواعيد من LocalStorage عند التحميل
+let prayers = JSON.parse(localStorage.getItem("prayers")) || {};
 
-days.forEach(day=>{
-let tr=document.createElement("tr");
-let td=document.createElement("td");
-td.innerText=day;
-tr.appendChild(td);
+// جدول الأيام
+const days = ["الأربعاء","الخميس","الجمعة","السبت","الأحد","الإثنين","الثلاثاء"];
+const times = ["إمساك","فجر","ظهر","عصر","مغرب","عشاء"];
 
-prayers.forEach(p=>{
-let td2=document.createElement("td");
-let input=document.createElement("input");
-input.type="time";
-input.value=(data[day]&&data[day][p])||"";
-input.id=day+p;
-td2.appendChild(input);
-tr.appendChild(td2);
-});
-tbody.appendChild(tr);
-});
+// تطبيق المواعيد على الجدول
+function renderTable(){
+    days.forEach(day=>{
+        times.forEach(time=>{
+            const cellId = `${day}-${time}`;
+            const val = prayers[cellId] || "";
+            const cell = document.getElementById(cellId);
+            if(cell) cell.innerText = val;
+        });
+    });
+}
+renderTable();
 
-function savePrayers(){
-let newData={};
-days.forEach(day=>{
-newData[day]={};
-prayers.forEach(p=>{
-newData[day][p]=document.getElementById(day+p).value;
-});
-});
-localStorage.setItem("prayers",JSON.stringify(newData));
-alert("تم الحفظ");
-  }
+// إضافة موعد جديد
+function addPrayer(){
+    const day = document.getElementById("daySelect").value;
+    const time = document.getElementById("timeSelect").value;
+    const input = document.getElementById("prayerInput").value;
 
-document.getElementById("savePrayers").onclick = function() {
+    if(!input) return alert("أدخل وقت الصلاة");
 
-    const fajr = document.getElementById("fajr").value;
-    const dhuhr = document.getElementById("dhuhr").value;
+    const cellId = `${day}-${time}`;
+    prayers[cellId] = input;
+    localStorage.setItem("prayers", JSON.stringify(prayers));
 
-    localStorage.setItem("fajr", fajr);
-    localStorage.setItem("dhuhr", dhuhr);
+    renderTable();
+    alert("تم حفظ الموعد");
+}
 
-    document.getElementById("fajrCell").innerText = fajr;
-    document.getElementById("dhuhrCell").innerText = dhuhr;
-  }
+// ======= تشغيل الصوت حسب المواعيد =======
+function checkPrayerAudio(){
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const dayName = days[now.getDay()===0?6:now.getDay()-1]; // تعديل لتوافق جدولنا
 
-localStorage.setItem("audioFile", base64Data);
-localStorage.setItem("playedToday", JSON.stringify({Fajr:false,Dhuhr:false,Asr:false,Maghrib:false,Isha:false}));
-localStorage.setItem("lastDate", "YYYY-MM-DD"); // لتتبع اليوم
+    times.forEach(time=>{
+        const cellId = `${dayName}-${time}`;
+        const val = prayers[cellId];
+        if(val){
+            const [h,m] = val.split(":").map(Number);
+            if(h===hours && m===minutes){
+                const lastPlayed = localStorage.getItem("lastPlayed-"+cellId);
+                const today = now.toDateString();
+                if(lastPlayed !== today){
+                    playAudio();
+                    localStorage.setItem("lastPlayed-"+cellId,today);
+                }
+            }
+        }
+    });
+}
+
+// تحقق كل دقيقة
+setInterval(checkPrayerAudio,60000);
