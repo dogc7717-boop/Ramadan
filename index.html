@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تطبيق الذكر</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  /* صفحة البداية */
+  body {
+    margin:0;
+    font-family: 'Cairo', sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    background-color:white;
+    overflow:hidden;
+  }
+  #godWord {
+    font-size: 80px;
+    color: #004D00;
+    font-family: 'Kufi', sans-serif;
+    cursor:pointer;
+    transform: scale(1);
+    transition: transform 1s ease-in-out;
+  }
+  #godWord.animate {
+    transform: scale(3);
+  }
+</style>
+</head>
+<body>
+  <div id="godWord">الله</div>
+
+<script>
+  const godWord = document.getElementById("godWord");
+
+  godWord.addEventListener("click", () => {
+    // إضافة تأثير التكبير
+    godWord.classList.add("animate");
+
+    // بعد انتهاء الحركة، الانتقال لواجهة التطبيق
+    setTimeout(() => {
+      window.location.href = "main.html"; // هنا رابط الصفحة الرئيسية للتطبيق
+    }, 1000); // مدة الانتقال بعد 1 ثانية
+  });
+</script>
+</body>
+</html>
