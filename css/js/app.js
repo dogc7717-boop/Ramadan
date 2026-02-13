@@ -1,87 +1,86 @@
-/* ==============================
-   app.js - إعدادات + عدادات
-============================== */
+document.addEventListener("DOMContentLoaded", function(){
 
-// ======= عدادات التسبيح =======
-for(let i=1;i<=3;i++){
-    let count = localStorage.getItem("count"+i)||0;
-    document.getElementById("count"+i)?.innerText=count;
+  // ======= عدادات التسبيح =======
+  for(let i=1;i<=3;i++){
+    let count = localStorage.getItem("count"+i) || 0;
+    const countEl = document.getElementById("count"+i);
+    const btnEl = document.getElementById("btn"+i);
+    if(countEl) countEl.innerText = count;
 
-    document.getElementById("btn"+i)?.addEventListener("click",function(){
+    if(btnEl){
+      btnEl.addEventListener("click", function(){
         count++;
-        document.getElementById("count"+i).innerText=count;
-        localStorage.setItem("count"+i,count);
-    });
-}
+        countEl.innerText = count;
+        localStorage.setItem("count"+i, count);
+      });
+    }
+  }
 
-function reset(num){
-    localStorage.setItem("count"+num,0);
-    document.getElementById("count"+num).innerText=0;
-}
+  // ======= زر التصفير =======
+  window.reset = function(num){
+    const countEl = document.getElementById("count"+num);
+    if(countEl){
+      localStorage.setItem("count"+num, 0);
+      countEl.innerText = 0;
+    }
+  }
 
-// ======= نافذة الإعدادات =======
-function toggleSettings(){
+  // ======= نافذة الإعدادات =======
+  window.toggleSettings = function(){
     const panel = document.getElementById("settingsPanel");
     if(panel){
-        panel.style.right = panel.style.right === "0px" ? "-320px" : "0px";
+      panel.style.right = panel.style.right === "0px" ? "-320px" : "0px";
     }
-}
+  }
 
-// ======= الخلفية =======
-function changeBackground(){
+  // ======= تغيير الخلفية =======
+  window.changeBackground = function(){
     const file = document.getElementById("bgUpload")?.files[0];
     if(!file) return;
     const reader = new FileReader();
     reader.onload = function(){
-        localStorage.setItem("bgImage", reader.result);
-        document.body.style.background=`url(${reader.result}) no-repeat center center / cover`;
+      localStorage.setItem("bgImage", reader.result);
+      document.body.style.background = `url(${reader.result}) no-repeat center center / cover`;
     }
     reader.readAsDataURL(file);
-}
+  }
 
-// ======= تطبيق الخلفية عند التحميل =======
-window.addEventListener("load", function(){
-    const bg = localStorage.getItem("bgImage");
-    if(bg) document.body.style.background=`url(${bg}) no-repeat center center / cover`;
-
+  // ======= تغيير نصوص الأزرار =======
+  window.changeButtonsText = function(){
     for(let i=1;i<=3;i++){
-        const text = localStorage.getItem("btnText"+i);
-        if(text) document.getElementById("btn"+i).innerText=text;
+      const input = document.getElementById("btn"+i+"Text");
+      const btn = document.getElementById("btn"+i);
+      if(input && btn && input.value){
+        btn.innerText = input.value;
+        localStorage.setItem("btnText"+i, input.value);
+      }
     }
+  }
 
-    // تشغيل صوت الأذان لو موجود
-    const audioSrc = localStorage.getItem("adhanAudio");
-    if(audioSrc){
-        let audio = new Audio(audioSrc);
-        window.audio = audio;
-    }
-});
-
-// ======= تغيير نصوص أزرار التسبيح =======
-function changeButtonsText(){
-    for(let i=1;i<=3;i++){
-        const val = document.getElementById("btn"+i+"Text")?.value;
-        if(val){
-            document.getElementById("btn"+i).innerText=val;
-            localStorage.setItem("btnText"+i,val);
-        }
-    }
-}
-
-// ======= رفع صوت الأذان =======
-function saveAudio(){
+  // ======= رفع وتشغيل الصوت =======
+  window.saveAudio = function(){
     const file = document.getElementById("audioUpload")?.files[0];
     if(!file) return;
     const reader = new FileReader();
     reader.onload = function(){
-        localStorage.setItem("adhanAudio", reader.result);
-        alert("تم رفع الصوت بنجاح");
-        window.audio = new Audio(reader.result);
+      localStorage.setItem("adhanAudio", reader.result);
+      alert("تم رفع الصوت بنجاح، اضغط على أي زر لتشغيله أول مرة");
+      window.audio = new Audio(reader.result);
     }
     reader.readAsDataURL(file);
-}
+  }
 
-// ======= تشغيل الصوت عند الحاجة =======
-function playAudio(){
-    if(window.audio) window.audio.play();
-           }
+  // ======= تحميل الخلفية والنصوص والصوت عند فتح الصفحة =======
+  const bg = localStorage.getItem("bgImage");
+  if(bg) document.body.style.background = `url(${bg}) no-repeat center center / cover`;
+
+  for(let i=1;i<=3;i++){
+    const text = localStorage.getItem("btnText"+i);
+    const btn = document.getElementById("btn"+i);
+    if(text && btn) btn.innerText = text;
+  }
+
+  const audioSrc = localStorage.getItem("adhanAudio");
+  if(audioSrc) window.audio = new Audio(audioSrc);
+
+});
