@@ -6,36 +6,70 @@
 <title>مواعيد الصلاة</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
 
-<header>
-مواعيد الصلاة
-<nav>
-<a href="index.html">الرئيسية</a>
-<a href="prayer.html">مواعيد الصلاة</a>
-<a href="donate.html">تبرع</a>
+<nav class="top-nav">
+    <a href="index.html">الرئيسية</a>
+    <a href="prayer.html">مواعيد الصلاة</a>
+    <a href="donate.html">تبرع</a>
+    <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
 </nav>
-</header>
 
 <div class="container">
-<table id="prayerTable">
-<thead>
-<tr>
-<th>اليوم</th>
-<th>الفجر</th>
-<th>الظهر</th>
-<th>العصر</th>
-<th>المغرب</th>
-<th>العشاء</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
 
-<button onclick="savePrayers()">حفظ</button>
+<div class="card">
+<table id="prayerTable">
+    <thead>
+        <tr>
+            <th>اليوم</th>
+            <th>إمساك</th>
+            <th>فجر</th>
+            <th>ظهر</th>
+            <th>عصر</th>
+            <th>مغرب</th>
+            <th>عشاء</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>الأربعاء</td><td id="الأربعاء-إمساك"></td><td id="الأربعاء-فجر"></td><td id="الأربعاء-ظهر"></td><td id="الأربعاء-عصر"></td><td id="الأربعاء-مغرب"></td><td id="الأربعاء-عشاء"></td></tr>
+        <tr><td>الخميس</td><td id="الخميس-إمساك"></td><td id="الخميس-فجر"></td><td id="الخميس-ظهر"></td><td id="الخميس-عصر"></td><td id="الخميس-مغرب"></td><td id="الخميس-عشاء"></td></tr>
+        <tr><td>الجمعة</td><td id="الجمعة-إمساك"></td><td id="الجمعة-فجر"></td><td id="الجمعة-ظهر"></td><td id="الجمعة-عصر"></td><td id="الجمعة-مغرب"></td><td id="الجمعة-عشاء"></td></tr>
+        <tr><td>السبت</td><td id="السبت-إمساك"></td><td id="السبت-فجر"></td><td id="السبت-ظهر"></td><td id="السبت-عصر"></td><td id="السبت-مغرب"></td><td id="السبت-عشاء"></td></tr>
+        <tr><td>الأحد</td><td id="الأحد-إمساك"></td><td id="الأحد-فجر"></td><td id="الأحد-ظهر"></td><td id="الأحد-عصر"></td><td id="الأحد-مغرب"></td><td id="الأحد-عشاء"></td></tr>
+        <tr><td>الإثنين</td><td id="الإثنين-إمساك"></td><td id="الإثنين-فجر"></td><td id="الإثنين-ظهر"></td><td id="الإثنين-عصر"></td><td id="الإثنين-مغرب"></td><td id="الإثنين-عشاء"></td></tr>
+        <tr><td>الثلاثاء</td><td id="الثلاثاء-إمساك"></td><td id="الثلاثاء-فجر"></td><td id="الثلاثاء-ظهر"></td><td id="الثلاثاء-عصر"></td><td id="الثلاثاء-مغرب"></td><td id="الثلاثاء-عشاء"></td></tr>
+    </tbody>
+</table>
 </div>
 
+<div class="card">
+<h3>إضافة موعد جديد</h3>
+<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+<select id="daySelect">
+    <option>الأربعاء</option>
+    <option>الخميس</option>
+    <option>الجمعة</option>
+    <option>السبت</option>
+    <option>الأحد</option>
+    <option>الإثنين</option>
+    <option>الثلاثاء</option>
+</select>
+
+<select id="timeSelect">
+    <option>إمساك</option>
+    <option>فجر</option>
+    <option>ظهر</option>
+    <option>عصر</option>
+    <option>مغرب</option>
+    <option>عشاء</option>
+</select>
+
+<input type="time" id="prayerInput">
+<button onclick="addPrayer()">إظهار</button>
+</div>
+</div>
+
+<footer>@samehelnady</footer>
+
+<script src="js/app.js"></script>
 <script src="js/prayer.js"></script>
-</body>
-</html>
