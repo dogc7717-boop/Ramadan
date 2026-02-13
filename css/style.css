@@ -1,119 +1,68 @@
-body{for(let i=1;i<=3;i++){
+/* ================================
+   عام للصفحات الثلاثة
+================================= */
 
-let count=localStorage.getItem("count"+i) || 0;
-document.getElementById("count"+i).innerText=count;
-
-let text=localStorage.getItem("btnText"+i);
-if(text) document.getElementById("btn"+i).innerText=text;
-
-document.getElementById("btn"+i).onclick=function(){
-count++;
-document.getElementById("count"+i).innerText=count;
-localStorage.setItem("count"+i,count);
-}
-
-document.getElementById("edit"+i).onchange=function(){
-let val=this.value;
-document.getElementById("btn"+i).innerText=val;
-localStorage.setItem("btnText"+i,val);
-}
-}
-
-function reset(num){
-localStorage.setItem("count"+num,0);
-document.getElementById("count"+num).innerText=0;
-}
-
-let general=localStorage.getItem("generalText");
-if(general){
-document.getElementById("displayText").innerText=general;
-}
-
-document.getElementById("generalText").oninput=function(){
-localStorage.setItem("generalText",this.value);
-document.getElementById("displayText").innerText=this.value;
-}
-
-document.getElementById("textColor").oninput=function(){
-document.getElementById("displayText").style.color=this.value;
-localStorage.setItem("textColor",this.value);
-}
-
-let savedColor=localStorage.getItem("textColor");
-if(savedColor){
-document.getElementById("displayText").style.color=savedColor;
-}
-
-document.getElementById("imageUpload").onchange=function(e){
-let file=e.target.files[0];
-let reader=new FileReader();
-reader.onload=function(){
-let images=JSON.parse(localStorage.getItem("images")||"[]");
-images.push(reader.result);
-localStorage.setItem("images",JSON.stringify(images));
-}
-reader.readAsDataURL(file);
-}
-
-function changeBackground(){
-let val=document.getElementById("bgInput").value;
-document.body.style.background=val;
-localStorage.setItem("bg",val);
-}
-
-let bg=localStorage.getItem("bg");
-if(bg) document.body.style.background=bg;
-
-function saveAudio(){
-let val=document.getElementById("audioInput").value;
-localStorage.setItem("audio",val);
-document.getElementById("player").src=val;
-}
-
-let audio=localStorage.getItem("audio");
-if(audio) document.getElementById("player").src=audio;
+body{
     margin:0;
     font-family:'Cairo',sans-serif;
     background:linear-gradient(135deg,#0f172a,#1e293b);
     color:white;
     text-align:center;
+    transition: background 0.5s;
 }
 
-nav{
+/* ---- Navbar علوي ---- */
+.top-nav{
     display:flex;
-    justify-content:center;
-    gap:25px;
-    padding:15px;
+    justify-content:space-around;
+    align-items:center;
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(10px);
+    padding:12px;
     font-weight:bold;
+    position:sticky;
+    top:0;
+    z-index:100;
+    border-bottom:1px solid rgba(255,255,255,0.2);
 }
 
-nav a{
+.top-nav a, .settings-btn{
     color:#facc15;
     text-decoration:none;
     font-size:18px;
+    background:none;
+    border:none;
+    cursor:pointer;
 }
 
+/* ---- الحاوية العامة ---- */
 .container{
     max-width:420px;
     margin:auto;
     padding:15px;
 }
 
+/* ---- الكروت العامة ---- */
 .card{
     background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(10px);
-    border-radius:20px;
+    backdrop-filter:blur(15px);
+    border-radius:25px;
     padding:20px;
-    margin-top:20px;
+    margin-top:25px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.5);
 }
 
+/* ---- أزرار التسبيح ---- */
 .buttons{
     display:flex;
+    justify-content:space-between;
     gap:10px;
+    flex-wrap:wrap;
 }
 
 .zikr-box{
     flex:1;
+    min-width:100px;
 }
 
 .zikr-btn{
@@ -124,8 +73,15 @@ nav a{
     background:linear-gradient(45deg,#facc15,#f59e0b);
     font-weight:bold;
     cursor:pointer;
+    box-shadow:0 4px 10px rgba(0,0,0,0.3);
+    transition: transform 0.1s;
 }
 
+.zikr-btn:active{
+    transform:scale(0.95);
+}
+
+/* ---- زر التصفير ---- */
 .reset-btn{
     background:red;
     color:white;
@@ -134,32 +90,25 @@ nav a{
     padding:6px;
     margin-top:6px;
     width:100%;
+    cursor:pointer;
 }
 
-input,button{
-    margin-top:8px;
-    padding:8px;
-    border-radius:10px;
-    border:none;
-    width:100%;
+/* ---- عداد كل زر ---- */
+.count{
+    margin-top:5px;
+    font-size:20px;
+    color:#22c55e;
 }
 
-.glow-text{
-    margin-top:15px;
-    font-size:22px;
-    animation:fadeIn 1s ease-in-out;
+/* ---- Footer ---- */
+footer{
+    margin-top:30px;
+    padding:15px;
+    font-size:14px;
+    opacity:0.8;
 }
 
-@keyframes fadeIn{
-    from{opacity:0;}
-    to{opacity:1;}
-}
-
-img{
-    width:100%;
-    border-radius:15px;
-    margin-top:10px;
-}
+/* ---- كارت التبرع ---- */
 .donate-glass{
     height:300px;
     display:flex;
@@ -170,14 +119,83 @@ img{
     border-radius:25px;
     margin-top:40px;
     font-size:22px;
+    text-align:center;
+    box-shadow:0 8px 20px rgba(0,0,0,0.5);
 }
 
 .donate-footer{
     margin-top:20px;
+    text-align:center;
+    font-size:16px;
     opacity:0.8;
+}
+
+/* ---- نافذة الإعدادات ---- */
+#settingsPanel{
+    position:fixed;
+    top:0;
+    right:-300px;
+    width:300px;
+    height:100%;
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(15px);
+    padding:20px;
+    box-shadow:-5px 0 15px rgba(0,0,0,0.5);
+    transition:right 0.3s ease;
+    z-index:200;
+}
+
+#settingsPanel h3{
+    margin-top:0;
+    margin-bottom:15px;
+}
+
+#settingsPanel input, #settingsPanel button{
+    margin-bottom:10px;
+    width:100%;
+    padding:8px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+}
+
+#settingsPanel button{
+    background:linear-gradient(45deg,#facc15,#f59e0b);
+    font-weight:bold;
+}
+
+#settingsPanel .close-settings{
+    background:red;
+    color:white;
+}
+
+/* ---- جدول مواعيد الصلاة ---- */
+table{
+    width:100%;
+    border-collapse:collapse;
+    text-align:center;
     font-size:14px;
 }
 
-localStorage.setItem("audioFile", base64Data);
-localStorage.setItem("playedToday", JSON.stringify({Fajr:false,Dhuhr:false,Asr:false,Maghrib:false,Isha:false}));
-localStorage.setItem("lastDate", "YYYY-MM-DD"); // لتتبع اليوم
+th, td{
+    border:1px solid rgba(255,255,255,0.2);
+    padding:8px;
+}
+
+/* ---- إدخال مواعيد الصلاة ---- */
+.card select, .card input, .card button{
+    padding:8px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+}
+
+/* ---- Responsive ---- */
+@media(max-width:480px){
+    .buttons{
+        flex-direction:column;
+    }
+    .zikr-box{
+        min-width:100%;
+    }
+                    }
