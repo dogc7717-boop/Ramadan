@@ -1,140 +1,8 @@
-/* ================================
-   عام للصفحات الثلاثة
-================================= */
-
-body{
-    margin:0;
-    font-family:'Cairo',sans-serif;
-    background:linear-gradient(135deg,#0f172a,#1e293b);
-    color:white;
-    text-align:center;
-    transition: background 0.5s;
-}
-
-/* ---- Navbar علوي ---- */
-.top-nav{
-    display:flex;
-    justify-content:space-around;
-    align-items:center;
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(10px);
-    padding:12px;
-    font-weight:bold;
-    position:sticky;
-    top:0;
-    z-index:100;
-    border-bottom:1px solid rgba(255,255,255,0.2);
-}
-
-.top-nav a, .settings-btn{
-    color:#facc15;
-    text-decoration:none;
-    font-size:18px;
-    background:none;
-    border:none;
-    cursor:pointer;
-}
-
-/* ---- الحاوية العامة ---- */
-.container{
-    max-width:420px;
-    margin:auto;
-    padding:15px;
-}
-
-/* ---- الكروت العامة ---- */
-.card{
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(15px);
-    border-radius:25px;
-    padding:20px;
-    margin-top:25px;
-    box-shadow:0 8px 20px rgba(0,0,0,0.5);
-}
-
-/* ---- أزرار التسبيح ---- */
-.buttons{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-    flex-wrap:wrap;
-}
-
-.zikr-box{
-    flex:1;
-    min-width:100px;
-}
-
-.zikr-btn{
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:15px;
-    background:linear-gradient(45deg,#facc15,#f59e0b);
-    font-weight:bold;
-    cursor:pointer;
-    box-shadow:0 4px 10px rgba(0,0,0,0.3);
-    transition: transform 0.1s;
-}
-
-.zikr-btn:active{
-    transform:scale(0.95);
-}
-
-/* ---- زر التصفير ---- */
-.reset-btn{
-    background:red;
-    color:white;
-    border:none;
-    border-radius:10px;
-    padding:6px;
-    margin-top:6px;
-    width:100%;
-    cursor:pointer;
-}
-
-/* ---- عداد كل زر ---- */
-.count{
-    margin-top:5px;
-    font-size:20px;
-    color:#22c55e;
-}
-
-/* ---- Footer ---- */
-footer{
-    margin-top:30px;
-    padding:15px;
-    font-size:14px;
-    opacity:0.8;
-}
-
-/* ---- كارت التبرع ---- */
-.donate-glass{
-    height:300px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(15px);
-    border-radius:25px;
-    margin-top:40px;
-    font-size:22px;
-    text-align:center;
-    box-shadow:0 8px 20px rgba(0,0,0,0.5);
-}
-
-.donate-footer{
-    margin-top:20px;
-    text-align:center;
-    font-size:16px;
-    opacity:0.8;
-}
-
 /* ---- نافذة الإعدادات ---- */
 #settingsPanel{
     position:fixed;
     top:0;
-    right:-300px;
+    right:-320px;  /* مخفية تماماً في البداية */
     width:300px;
     height:100%;
     background:rgba(255,255,255,0.05);
@@ -143,6 +11,7 @@ footer{
     box-shadow:-5px 0 15px rgba(0,0,0,0.5);
     transition:right 0.3s ease;
     z-index:200;
+    overflow:hidden;  /* منع ظهور أي جزء */
 }
 
 #settingsPanel h3{
@@ -168,34 +37,3 @@ footer{
     background:red;
     color:white;
 }
-
-/* ---- جدول مواعيد الصلاة ---- */
-table{
-    width:100%;
-    border-collapse:collapse;
-    text-align:center;
-    font-size:14px;
-}
-
-th, td{
-    border:1px solid rgba(255,255,255,0.2);
-    padding:8px;
-}
-
-/* ---- إدخال مواعيد الصلاة ---- */
-.card select, .card input, .card button{
-    padding:8px;
-    border-radius:10px;
-    border:none;
-    cursor:pointer;
-}
-
-/* ---- Responsive ---- */
-@media(max-width:480px){
-    .buttons{
-        flex-direction:column;
-    }
-    .zikr-box{
-        min-width:100%;
-    }
-                    }
