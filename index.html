@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,65 +8,56 @@
 </head>
 <body>
 
-<nav>
-<a href="index.html">الرئيسية</a>
-<a href="prayer.html">مواعيد الصلاة</a>
-<a href="gallery.html">الصور</a>
-<a href="donate.html">تبرع</a>
+<nav class="top-nav">
+    <a href="index.html">الرئيسية</a>
+    <a href="prayer.html">مواعيد الصلاة</a>
+    <a href="donate.html">تبرع</a>
+    <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
 </nav>
 
 <div class="container">
 
-<div class="card">
-<div class="buttons">
-
-<div class="zikr-box">
-<button class="zikr-btn" id="btn1">سبحان الله</button>
-<input type="text" id="edit1" placeholder="تغيير النص">
-<div id="count1">0</div>
-<button class="reset-btn" onclick="reset(1)">تصفير</button>
+<div class="card buttons">
+    <div class="zikr-box">
+        <button class="zikr-btn" id="btn1">سبحان الله</button>
+        <div class="count" id="count1">0</div>
+        <button class="reset-btn" onclick="reset(1)">تصفير</button>
+    </div>
+    <div class="zikr-box">
+        <button class="zikr-btn" id="btn2">الحمد لله</button>
+        <div class="count" id="count2">0</div>
+        <button class="reset-btn" onclick="reset(2)">تصفير</button>
+    </div>
+    <div class="zikr-box">
+        <button class="zikr-btn" id="btn3">الله أكبر</button>
+        <div class="count" id="count3">0</div>
+        <button class="reset-btn" onclick="reset(3)">تصفير</button>
+    </div>
 </div>
 
-<div class="zikr-box">
-<button class="zikr-btn" id="btn2">الحمد لله</button>
-<input type="text" id="edit2" placeholder="تغيير النص">
-<div id="count2">0</div>
-<button class="reset-btn" onclick="reset(2)">تصفير</button>
+<!-- إعدادات -->
+<div id="settingsPanel">
+    <h3>إعدادات التطبيق</h3>
+
+    <label>خلفية التطبيق:</label>
+    <input type="file" id="bgUpload">
+    <button onclick="changeBackground()">تطبيق الخلفية</button>
+
+    <label>تغيير نصوص أزرار التسبيح:</label>
+    <input type="text" placeholder="زر 1" id="btn1Text">
+    <input type="text" placeholder="زر 2" id="btn2Text">
+    <input type="text" placeholder="زر 3" id="btn3Text">
+    <button onclick="changeButtonsText()">تطبيق النصوص</button>
+
+    <label>رفع صوت الأذان:</label>
+    <input type="file" id="audioUpload">
+    <button onclick="saveAudio()">تطبيق الصوت</button>
+
+    <button onclick="toggleSettings()" class="close-settings">إغلاق</button>
 </div>
 
-<div class="zikr-box">
-<button class="zikr-btn" id="btn3">الله أكبر</button>
-<input type="text" id="edit3" placeholder="تغيير النص">
-<div id="count3">0</div>
-<button class="reset-btn" onclick="reset(3)">تصفير</button>
-</div>
-
-</div>
-</div>
-
-<div class="card">
-<input type="text" id="generalText" placeholder="اكتب نص يظهر هنا">
-<input type="color" id="textColor">
-<div class="glow-text" id="displayText"></div>
-</div>
-
-<div class="card">
-<input type="file" id="imageUpload">
-</div>
-
-<div class="card">
-<input type="text" id="bgInput" placeholder="رابط صورة خلفية أو لون">
-<button onclick="changeBackground()">تغيير الخلفية</button>
-</div>
-
-<div class="card">
-<input type="text" id="audioInput" placeholder="رابط صوتي">
-<button onclick="saveAudio()">حفظ الصوت</button>
-<audio id="player" controls></audio>
-</div>
-
-</div>
+<footer>@samehelnady</footer>
 
 <script src="js/app.js"></script>
 </body>
-  </html>
+</html>
