@@ -1,13 +1,20 @@
 {
-  "name": "تطبيق سامح النادي",
-  "short_name": "مسبحة سامح",
+  "name": "مسبحة  PRO",
+  "short_name": "مسبحة ",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#1a2a6c",
-  "theme_color": "#1a2a6c",
-  "icons": [{
-    "src": "https://cdn-icons-png.flaticon.com/512/2972/2972352.png",
-    "sizes": "512x512",
-    "type": "image/png"
-  }]
+  "background_color": "#0a0e17",
+  "theme_color": "#9c27b0",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2710/2710264.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2710/2710264.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
