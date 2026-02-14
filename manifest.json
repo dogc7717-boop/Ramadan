@@ -1,15 +1,19 @@
 {
   "name": "مسبحة رمضان كريم PRO",
-  "short_name": "رمضان كريم",
+  "short_name": "SAMEHELNADY",
+  "description": "مسبحة إلكترونية وإمساكية عالمية - صدقة جارية",
   "start_url": "index.html",
   "display": "standalone",
+  "display_override": ["fullscreen", "standalone"],
   "background_color": "#0a0e17",
   "theme_color": "#FFD700",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "https://img.icons8.com/isometric/512/mosque.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
