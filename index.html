@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -7,12 +7,13 @@
     
     <meta property="og:title" content="مسبحة رمضان كريم PRO">
     <meta property="og:description" content="مسبحتك الإلكترونية وإمساكية رمضان 2026 لكل العالم - صدقة جارية">
-    <meta property="og:image" content="https://img.icons8.com/isometric/512/cover.png">
-    <meta property="og:url" content="https://dogc7717-boop.github.io/Ramadan-Kareem/">
+    <meta property="og:image" content="https://dogc7717-boop.github.io/Ramadan/cover.jpg">
+    <meta property="og:url" content="https://dogc7717-boop.github.io/Ramadan/">
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="https://img.icons8.com/isometric/512/mosque.png">
+    <link rel="apple-touch-icon" href="https://dogc7717-boop.github.io/Ramadan/icon.png">
+    <link rel="icon" href="https://dogc7717-boop.github.io/Ramadan/icon.png">
 
     <style>
         :root {
@@ -26,10 +27,23 @@
             background: var(--bg-dark) radial-gradient(circle at center, #1a237e 0%, #0a0e17 100%);
             color: white; font-family: 'Cairo', sans-serif;
             display: flex; flex-direction: column; min-height: 100vh;
-            user-select: none; /* منع تحديد النصوص */
+            user-select: none;
         }
 
-        /* تنسيق الجداول المتغيرة */
+        /* زر تثبيت التطبيق */
+        #installBtn {
+            display: none; /* هيظهر بس لو المتصفح بيدعم التثبيت */
+            margin: 10px auto;
+            padding: 10px 20px;
+            background: var(--gold);
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #331a00;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
         .region-egypt { border: 2px solid #9c27b0 !important; box-shadow: 0 0 15px rgba(156, 39, 176, 0.5); }
         .region-world { border: 2px solid #00d2ff !important; box-shadow: 0 0 15px rgba(0, 210, 255, 0.5); }
 
@@ -59,6 +73,9 @@
         td, th { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
         th { background: rgba(255,215,0,0.1); color: gold; }
 
+        .contact-icons { display: flex; justify-content: center; gap: 20px; padding: 15px; }
+        .contact-icons img { width: 40px; height: 40px; }
+
         nav {
             position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.9);
             display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #9c27b0;
@@ -66,7 +83,7 @@
         nav span { cursor: pointer; color: #aaa; font-size: 0.9rem; }
         nav span.active { color: gold; font-weight: bold; }
 
-        .rights { text-align: center; padding: 10px; font-size: 0.7rem; color: rgba(255,215,0,0.4); }
+        .rights { text-align: center; padding: 10px; font-size: 0.7rem; color: rgba(255,215,0,0.4); margin-bottom: 70px; }
     </style>
 </head>
 <body>
@@ -75,6 +92,8 @@
     <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3" preload="auto"></audio>
 
     <div id="subhaPage">
+        <button id="installBtn">📲 تثبيت التطبيق على الهاتف</button>
+
         <div class="zekr-grid">
             <button onclick="setZekr('الله أكبر')">الله أكبر</button>
             <button onclick="setZekr('الحمد لله')">الحمد لله</button>
@@ -102,33 +121,25 @@
             </select>
             <select id="citySelect" onchange="getPrayerTimes()" style="flex:2"></select>
         </div>
-
         <select id="moazenSelect" onchange="changeMoazen()">
             <option value="https://audio.islamweb.net/audio/download.php?audioid=141873">أذان مكة المكرمة</option>
             <option value="https://audio.islamweb.net/audio/download.php?audioid=141872">أذان المدينة المنورة</option>
             <option value="https://audio.islamweb.net/audio/download.php?audioid=141880">أذان من مصر</option>
             <option value="https://audio.islamweb.net/audio/download.php?audioid=214578">مشاري العفاسي</option>
-            <option value="https://audio.islamweb.net/audio/download.php?audioid=141881">أذان حزين جداً</option>
         </select>
-
         <button id="playBtn" onclick="playAzan()" style="width:100%; padding:12px; background:var(--gold); border:none; border-radius:10px; font-weight:bold; margin-bottom:15px;">▶️ تجربة الأذان</button>
-
         <table id="prayerTable">
             <thead><tr><th>الصلاة</th><th>الموعد</th></tr></thead>
             <tbody id="tableBody"></tbody>
         </table>
     </div>
-    <div class="contact-icons">
-    <a href="https://wa.me/201287837118" target="_blank" class="whatsapp-btn">
-        <img src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="WhatsApp">
-    </a>
-    
-    <a href="https://t.me/+GYhTcjbn_NUyNTA0" target="_blank" class="telegram-btn">
-        <img src="https://img.icons8.com/color/48/telegram-app.png" alt="Telegram">
-    </a>
-</div>
 
-<div class="rights">تم التطوير بواسطة <b style="color:gold">SAMEHELNADY</b> © 2026</div>
+    <div class="contact-icons">
+        <a href="https://wa.me/201287837118" target="_blank"><img src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="WhatsApp"></a>
+        <a href="https://t.me/+GYhTcjbn_NUyNTA0" target="_blank"><img src="https://img.icons8.com/color/48/telegram-app.png" alt="Telegram"></a>
+    </div>
+
+    <div class="rights">تم التطوير بواسطة <b style="color:gold">SAMEHELNADY</b> © 2026</div>
 
     <nav>
         <span id="navSubha" class="active" onclick="showPage('subha')">📿 المسبحة</span>
@@ -136,12 +147,29 @@
     </nav>
 
     <script>
-        console.log("%cتم التطوير بواسطة SAMEHELNADY", "color: gold; font-size: 20px; font-weight: bold;");
+        // كود تشغيل زر التنزيل (PWA)
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
 
-        // حماية الكود
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    installBtn.style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
+        });
+
+        // باقي وظائف المسبحة والإمساكية
         document.addEventListener('contextmenu', e => e.preventDefault());
-        document.onkeydown = e => { if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0))) return false; };
-
         let count = 0;
         const egyptCities = [{n:"القاهرة",v:"Cairo"},{n:"الإسكندرية",v:"Alexandria"},{n:"المنصورة",v:"Mansoura"},{n:"أسوان",v:"Aswan"},{n:"بورسعيد",v:"Port Said"}];
         const worldCapitals = [{n:"مكة المكرمة",v:"Mecca",c:"Saudi Arabia"},{n:"القدس",v:"Jerusalem",c:"Palestine"},{n:"لندن",v:"London",c:"UK"},{n:"اسطنبول",v:"Istanbul",c:"Turkey"}];
