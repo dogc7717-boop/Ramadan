@@ -9,9 +9,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body id="mainBody" onload="hideSplash()">
+<body id="mainBody">
 
-    <div id="splash"><h1>اللَّه</h1></div>
+    <div id="splash" style="position: fixed; inset: 0; background: #1a2a6c; color: #f2a343; display: flex; justify-content: center; align-items: center; z-index: 9999; font-size: 80px; transition: 0.8s;">
+        <h1>اللَّه</h1>
+    </div>
 
     <nav>
         <span onclick="showPage('subha')">📿 المسبحة</span>
@@ -35,25 +37,18 @@
     <div id="prayerPage" class="page" style="display:none;">
         <table id="emsakiaTable">
             <thead>
-    <tr>
-        <th>اليوم</th>
-        <th>إمساك</th>
-        <th>فجر</th>
-        <th>ظهر</th>
-        <th>عصر</th>
-        <th>مغرب</th>
-        <th>عشاء</th>
-    </tr>
-</thead>
+                <tr>
+                    <th>اليوم</th>
+                    <th>إمساك</th>
+                    <th>فجر</th>
+                    <th>ظهر</th>
+                    <th>عصر</th>
+                    <th>مغرب</th>
+                    <th>عشاء</th>
+                </tr>
+            </thead>
             <tbody id="tableBody"></tbody>
         </table>
-        <div class="azan-settings">
-            <label>صوت الأذان:</label>
-            <select id="azanSelect">
-                <option value="https://www.islamcan.com/audio/adhan/makkah.mp3">أذان مكة</option>
-                <option value="https://www.islamcan.com/audio/adhan/madina.mp3">أذان المدينة</option>
-            </select>
-        </div>
     </div>
 
     <div class="fab-container">
@@ -68,11 +63,28 @@
     </div>
 
     <audio id="azanAudio"></audio>
-    <script src="js/app.js"></script>
+
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+        // دالة الإخفاء الإجبارية
+        function forceHideSplash() {
+            const splash = document.getElementById('splash');
+            if (splash) {
+                setTimeout(() => {
+                    splash.style.opacity = '0';
+                    setTimeout(() => {
+                        splash.style.display = 'none';
+                    }, 800);
+                }, 2000);
+            }
         }
+        
+        // تشغيل الإخفاء فور تحميل الصفحة
+        window.addEventListener('load', forceHideSplash);
+        
+        // لو اتأخرت أكتر من 4 ثواني اخفيها برضه (خطة بديلة)
+        setTimeout(forceHideSplash, 4000);
     </script>
+    
+    <script src="js/app.js"></script>
 </body>
-              </html>
+    </html>
