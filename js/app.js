@@ -27,8 +27,13 @@ function changeBg(e) {
     r.readAsDataURL(e.target.files[0]);
 }
 
-// توليد الجدول
+// توليد الجدول بجميع المواقيت
 const tableBody = document.getElementById('tableBody');
+const days = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
+
 days.forEach(d => {
-    tableBody.innerHTML += `<tr><td>${d}</td><td contenteditable="true">04:30</td><td contenteditable="true">18:00</td></tr>`;
+    tableBody.innerHTML += `
+    <tr>
+        <td style="font-weight:bold; background:#f9f9f9;">${d}</td>
+        <td contenteditable="true">04:15</td> <td contenteditable="true">04:30</td> <td contenteditable="true">12:05</td> <td contenteditable="true">03:20</td> <td contenteditable="true">06:10</td> <td contenteditable="true">07:30</td> </tr>`;
 });
