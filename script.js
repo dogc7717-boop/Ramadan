@@ -1,68 +1,57 @@
-/**
- * ISKAR - Ramadan Application
- * Developed by: ISKAR
- */
-
 let count = 0;
-window.lastAzanTime = ""; // لمنع تكرار الأذان في نفس الدقيقة
+window.lastAzanTime = "";
 
-// بصمة التطبيق في الكونسول
-console.log("%cDeveloped by ISKAR", "color:gold; font-size:25px; font-weight:bold; text-shadow: 2px 2px 5px black;");
+// بصمة ISKAR
+console.log("%cDeveloped by ISKAR", "color:gold; font-size:20px; font-weight:bold;");
 
-// --- 1. وظيفة التسبيح (تكة اهتزاز + صوت نظام داخلي) ---
+// --- وظيفة التسبيح ---
 function addCount() { 
     count++; 
-    const counterElement = document.getElementById('counter');
-    if(counterElement) counterElement.innerText = count; 
+    document.getElementById('counter').innerText = count; 
     
-    // اهتزاز الهاتف (تكة ملموسة)
+    // اهتزاز
     if(navigator.vibrate) navigator.vibrate(40); 
 
-    // توليد صوت تكة (Beep) برمجياً لسرعة الأداء وعدم الحاجة لملفات
-    try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        oscillator.frequency.setValueAtTime(1000, audioCtx.currentTime);
-        gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
-        oscillator.start();
-        oscillator.stop(audioCtx.currentTime + 0.05);
-    } catch(e) { console.log("الصوت يحتاج تفاعل المستخدم"); }
+    // تشغيل صوت التكة (نظام)
+    let context = new (window.AudioContext || window.webkitAudioContext)();
+    let osc = context.createOscillator();
+    let gain = context.createGain();
+    osc.connect(gain);
+    gain.connect(context.destination);
+    osc.frequency.value = 1000;
+    gain.gain.setValueAtTime(0.1, context.currentTime);
+    osc.start();
+    osc.stop(context.currentTime + 0.05);
 }
 
-// --- 2. وظيفة اختيار وتشغيل الأذان ---
+// --- وظيفة تشغيل الأذان ---
 function playAzan() {
-    const selector = document.getElementById('azanSelector');
-    // إذا لم يوجد اختيار، سيتم تشغيل "مصر.mp3" كافتراضي
-    const soundFile = selector ? selector.value : "مصر.mp3";
+    // نجرب تشغيل "مصر.mp3" كاختبار أساسي
+    const audio = new Audio("مصر.mp3");
     
-    const audio = new Audio(soundFile);
-    audio.play().catch(err => {
-        console.log("يجب على المستخدم لمس الصفحة مرة واحدة لتفعيل الأذان التلقائي");
+    audio.play()
+    .then(() => console.log("الأذان يعمل الآن"))
+    .catch(err => {
+        alert("المتصفح يمنع الصوت. اضغط في أي مكان في الصفحة أولاً ليتفعل الأذان.");
+        console.error("خطأ في تشغيل الصوت:", err);
     });
 }
 
-// وظيفة زر "تجربة الصوت" في الإعدادات
+// زر تجربة الصوت
 function testAzanSound() {
     playAzan();
 }
 
-// --- 3. مراقبة مواقيت الصلاة من الجدول ---
-function monitorPrayerTimes() {
+// --- مراقبة الوقت ---
+function monitor() {
     const now = new Date();
-    // تنسيق الوقت الحالي (HH:mm) مثل 04:15
     const currentTime = now.getHours().toString().padStart(2, '0') + ":" + 
                         now.getMinutes().toString().padStart(2, '0');
 
-    // قراءة الأوقات من الجدول (الخانات القابلة للتعديل)
-    const timeCells = document.querySelectorAll("td[contenteditable='true']");
-    timeCells.forEach(cell => {
-        const prayerTime = cell.innerText.trim();
-        
-        if (prayerTime === currentTime) {
-            // التأكد من تشغيل الأذان مرة واحدة فقط في هذه الدقيقة
+    // قراءة كل خانات الجدول
+    const cells = document.querySelectorAll("td");
+    cells.forEach(cell => {
+        if (cell.innerText.trim() === currentTime) {
             if (window.lastAzanTime !== currentTime) {
                 playAzan();
                 window.lastAzanTime = currentTime;
@@ -70,29 +59,9 @@ function monitorPrayerTimes() {
         }
     });
 }
+setInterval(monitor, 10000); // يفحص كل 10 ثواني لضمان الدقة
 
-// فحص الوقت كل 30 ثانية لضمان الدقة العالية
-setInterval(monitorPrayerTimes, 30000);
-
-// --- 4. الدوال المساعدة (التنقل وتصفير العداد) ---
-function showPage(pageId) {
-    const subhaPage = document.getElementById('subhaPage');
-    const prayerPage = document.getElementById('prayerPage');
-    
-    if(pageId === 'subha') {
-        subhaPage.style.display = 'block';
-        prayerPage.style.display = 'none';
-    } else {
-        subhaPage.style.display = 'none';
-        prayerPage.style.display = 'block';
-    }
-}
-
-function resetCounter() { 
-    count = 0; 
-    const counterElement = document.getElementById('counter');
-    if(counterElement) counterElement.innerText = 0; 
-}
-
-// منع القائمة المنسدلة (كليك يمين) لحماية التصميم
-document.addEventListener('contextmenu', e => e.preventDefault());
+function showPage(p) {
+    document.getElementById('subhaPage').style.display = p === 'subha' ? 'block' : 'none';
+    document.getElementById('prayerPage').style.display = p === 'prayer' ? 'block' : 'none';
+                  }
