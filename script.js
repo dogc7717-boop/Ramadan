@@ -4,64 +4,74 @@ window.lastAzanTime = "";
 // بصمة ISKAR
 console.log("%cDeveloped by ISKAR", "color:gold; font-size:20px; font-weight:bold;");
 
-// --- وظيفة التسبيح ---
+// 1. وظيفة التسبيح (تكة واهتزاز) - تم تبسيطها جداً للموبايل
 function addCount() { 
     count++; 
-    document.getElementById('counter').innerText = count; 
+    const counterDisplay = document.getElementById('counter');
+    if(counterDisplay) counterDisplay.innerText = count; 
     
-    // اهتزاز
+    // اهتزاز الموبايل
     if(navigator.vibrate) navigator.vibrate(40); 
 
-    // تشغيل صوت التكة (نظام)
-    let context = new (window.AudioContext || window.webkitAudioContext)();
-    let osc = context.createOscillator();
-    let gain = context.createGain();
-    osc.connect(gain);
-    gain.connect(context.destination);
-    osc.frequency.value = 1000;
-    gain.gain.setValueAtTime(0.1, context.currentTime);
-    osc.start();
-    osc.stop(context.currentTime + 0.05);
+    // صوت تكة بسيط جداً
+    try {
+        let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(context.destination);
+        osc.frequency.value = 1000;
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.05);
+    } catch(e) {}
 }
 
-// --- وظيفة تشغيل الأذان ---
+// 2. وظيفة تشغيل الأذان
 function playAzan() {
-    // نجرب تشغيل "مصر.mp3" كاختبار أساسي
+    // جرب تشغيل الملف الأول مباشرة
     const audio = new Audio("مصر.mp3");
-    
-    audio.play()
-    .then(() => console.log("الأذان يعمل الآن"))
-    .catch(err => {
-        alert("المتصفح يمنع الصوت. اضغط في أي مكان في الصفحة أولاً ليتفعل الأذان.");
-        console.error("خطأ في تشغيل الصوت:", err);
+    audio.play().catch(err => {
+        console.log("المتصفح يطلب لمسة شاشة أولاً");
     });
 }
 
-// زر تجربة الصوت
-function testAzanSound() {
-    playAzan();
-}
-
-// --- مراقبة الوقت ---
-function monitor() {
+// 3. مراقبة الوقت (البحث في كل خلايا الجدول)
+function monitorTimes() {
     const now = new Date();
-    const currentTime = now.getHours().toString().padStart(2, '0') + ":" + 
-                        now.getMinutes().toString().padStart(2, '0');
+    // الحصول على الوقت الحالي مثل 15:30
+    const hr = now.getHours().toString().padStart(2, '0');
+    const min = now.getMinutes().toString().padStart(2, '0');
+    const currentTime = hr + ":" + min;
 
-    // قراءة كل خانات الجدول
-    const cells = document.querySelectorAll("td");
-    cells.forEach(cell => {
-        if (cell.innerText.trim() === currentTime) {
+    // البحث عن أي خلية في الجدول تحتوي على هذا الوقت
+    const allCells = document.getElementsByTagName('td');
+    for (let i = 0; i < allCells.length; i++) {
+        if (allCells[i].innerText.trim() === currentTime) {
             if (window.lastAzanTime !== currentTime) {
                 playAzan();
                 window.lastAzanTime = currentTime;
+                break; 
             }
         }
-    });
+    }
 }
-setInterval(monitor, 10000); // يفحص كل 10 ثواني لضمان الدقة
 
+// تشغيل الفحص كل 10 ثوانٍ
+setInterval(monitorTimes, 10000);
+
+// 4. وظائف التنقل
 function showPage(p) {
-    document.getElementById('subhaPage').style.display = p === 'subha' ? 'block' : 'none';
-    document.getElementById('prayerPage').style.display = p === 'prayer' ? 'block' : 'none';
-                  }
+    if(p === 'subha') {
+        document.getElementById('subhaPage').style.display = 'block';
+        document.getElementById('prayerPage').style.display = 'none';
+    } else {
+        document.getElementById('subhaPage').style.display = 'none';
+        document.getElementById('prayerPage').style.display = 'block';
+    }
+}
+
+function resetCounter() { 
+    count = 0; 
+    document.getElementById('counter').innerText = 0; 
+        }
