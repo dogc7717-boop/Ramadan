@@ -1,74 +1,173 @@
-<audio id="azanAudio" src="https://www.islamcan.com/common/audio/adhan/adhan-from-egypt.mp3"></audio>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مسبحة سامح النادي PRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: linear-gradient(180deg, #FFD700 0%, #B8860B 100%);
+            --purple-glow: 0 0 20px rgba(156, 39, 176, 0.7);
+            --bg-dark: #0a0e17;
+        }
 
-<script>
-    let count = 0;
-    const days = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
+        body {
+            margin: 0; padding: 0;
+            background: var(--bg-dark) radial-gradient(circle at center, #1a237e 0%, #0a0e17 100%);
+            color: white; font-family: 'Cairo', sans-serif;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
 
-    // دالة العداد مع الاهتزاز
-    function addCount() {
-        count++;
-        document.getElementById('counter').innerText = count;
-        if(navigator.vibrate) navigator.vibrate(50);
-    }
+        /* شبكة الأذكار العلوي */
+        .zekr-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 10px; padding: 15px; margin-top: 50px;
+        }
 
-    // دالة تشغيل الأذان للتجربة
-    function playAzan() {
-        const audio = document.getElementById('azanAudio');
-        audio.play().catch(e => alert("اضغط على الصفحة أولاً لتفعيل الصوت"));
-    }
+        .zekr-grid button {
+            background: var(--gold); border: 1px solid #fff59d;
+            border-radius: 12px; padding: 12px 5px;
+            font-weight: bold; font-size: 0.9rem; color: #331a00;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); cursor: pointer;
+        }
 
-    function resetCounter() {
-        count = 0;
-        document.getElementById('counter').innerText = 0;
-    }
+        /* العداد المضيء */
+        .counter-container {
+            flex-grow: 1; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+        }
 
-    function setZekr(z) {
-        document.getElementById('zekrName').innerText = z;
-        resetCounter();
-    }
+        #zekrName {
+            font-size: 1.8rem; margin-bottom: 15px;
+            text-shadow: 0 0 10px #9c27b0;
+        }
 
-    function showPage(p) {
-        document.getElementById('subhaPage').style.display = p === 'subha' ? 'block' : 'none';
-        document.getElementById('prayerPage').style.display = p === 'prayer' ? 'block' : 'none';
-        document.getElementById('navSubha').className = p === 'subha' ? 'active' : '';
-        document.getElementById('navPrayer').className = p === 'prayer' ? 'active' : '';
-    }
+        .main-circle {
+            width: 230px; height: 230px;
+            border: 6px solid #9c27b0; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            background: rgba(156, 39, 176, 0.1);
+            box-shadow: var(--purple-glow), inset var(--purple-glow);
+            transition: transform 0.1s; cursor: pointer;
+        }
 
-    // --- كود زر التحميل الأخضر الذكي ---
-    let deferredPrompt;
-    const installBtn = document.createElement('button');
-    installBtn.innerHTML = "📥 تثبيت التطبيق";
-    installBtn.style = "position:fixed; top:10px; left:10px; background:#00ff88; color:#000; border:none; padding:10px; border-radius:10px; font-weight:bold; display:none; z-index:10000; box-shadow: 0 0 10px #00ff88;";
-    document.body.appendChild(installBtn);
+        .main-circle:active { transform: scale(0.92); }
 
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        installBtn.style.display = 'block';
-    });
+        #counter {
+            font-size: 5.5rem; font-weight: bold;
+            color: #00ff88; text-shadow: 0 0 25px #00ff88;
+        }
 
-    installBtn.addEventListener('click', () => {
-        installBtn.style.display = 'none';
-        deferredPrompt.prompt();
-    });
+        /* زر التحميل الأخضر */
+        #installBtn {
+            position: fixed; top: 10px; left: 10px;
+            background: #00ff88; color: #000; border: none;
+            padding: 10px 15px; border-radius: 8px;
+            font-weight: bold; display: none; z-index: 1000;
+            box-shadow: 0 0 15px #00ff88;
+        }
 
-    // توليد الجدول
-    const tb = document.getElementById('tableBody');
-    if(tb) {
-        days.forEach(d => {
-            tb.innerHTML += `<tr>
-                <td style="color:gold">${d}</td>
-                <td contenteditable="true">04:30</td>
-                <td contenteditable="true">12:05</td>
-                <td contenteditable="true">03:20</td>
-                <td contenteditable="true">06:10</td>
-                <td contenteditable="true">07:30</td>
-            </tr>`;
+        /* الإمساكية */
+        #prayerPage { padding: 15px; display: none; }
+        table {
+            width: 100%; border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.05); border-radius: 10px;
+        }
+        th { background: #4a148c; padding: 10px; color: gold; }
+        td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
+
+        /* التنقل السفلي */
+        nav {
+            position: fixed; bottom: 0; width: 100%;
+            background: rgba(0, 0, 0, 0.85); display: flex;
+            justify-content: space-around; padding: 15px 0;
+            border-top: 1px solid #9c27b0;
+        }
+        nav span { cursor: pointer; color: #aaa; }
+        nav span.active { color: gold; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <button id="installBtn">📥 تثبيت التطبيق</button>
+
+    <div id="subhaPage">
+        <div class="zekr-grid">
+            <button onclick="setZekr('الله أكبر')">الله أكبر</button>
+            <button onclick="setZekr('الحمد لله')">الحمد لله</button>
+            <button onclick="setZekr('سبحان الله')">سبحان الله</button>
+        </div>
+
+        <div class="counter-container">
+            <div id="zekrName">سبحان الله</div>
+            <div class="main-circle" onclick="addCount()">
+                <div id="counter">0</div>
+            </div>
+            <button style="margin-top:20px; background:none; border:1px solid #555; color:#888; border-radius:15px; padding:5px 15px;" onclick="resetCounter()">تصفير</button>
+        </div>
+    </div>
+
+    <div id="prayerPage">
+        <h3 style="text-align:center; color:gold;">إمساكية الأسبوع</h3>
+        <table>
+            <thead>
+                <tr><th>اليوم</th><th>فجر</th><th>ظهر</th><th>عصر</th><th>مغرب</th></tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <nav>
+        <span id="navSubha" class="active" onclick="showPage('subha')">📿 المسبحة</span>
+        <span id="navPrayer" onclick="showPage('prayer')">🗓️ الإمساكية</span>
+    </nav>
+
+    <script>
+        let count = 0;
+        const days = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
+
+        function addCount() {
+            count++;
+            document.getElementById('counter').innerText = count;
+            if(navigator.vibrate) navigator.vibrate(50);
+        }
+
+        function resetCounter() {
+            count = 0;
+            document.getElementById('counter').innerText = 0;
+        }
+
+        function setZekr(z) {
+            document.getElementById('zekrName').innerText = z;
+            resetCounter();
+        }
+
+        function showPage(p) {
+            document.getElementById('subhaPage').style.display = p === 'subha' ? 'block' : 'none';
+            document.getElementById('prayerPage').style.display = p === 'prayer' ? 'block' : 'none';
+            document.getElementById('navSubha').className = p === 'subha' ? 'active' : '';
+            document.getElementById('navPrayer').className = p === 'prayer' ? 'active' : '';
+        }
+
+        // كود زر التثبيت
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBtn').style.display = 'block';
         });
-    }
 
-    // تسجيل الـ Service Worker (مهم جداً لظهور زر التحميل)
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js');
-    }
-</script>
+        document.getElementById('installBtn').addEventListener('click', () => {
+            document.getElementById('installBtn').style.display = 'none';
+            deferredPrompt.prompt();
+        });
+
+        // بناء الجدول
+        const tb = document.getElementById('tableBody');
+        days.forEach(d => {
+            tb.innerHTML += `<tr><td style="color:gold">${d}</td><td>04:30</td><td>12:05</td><td>03:20</td><td>06:10</td></tr>`;
+        });
+    </script>
+</body>
+                                                                      </html>
