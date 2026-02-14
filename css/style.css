@@ -1,0 +1,14 @@
+:root { --p: #1a2a6c; }
+body { font-family: 'Cairo'; margin: 0; background-color: #f0f4f7; background-size: cover; background-attachment: fixed; transition: 0.4s; }
+nav { background: var(--p); color: white; display: flex; justify-content: space-around; padding: 15px; cursor: pointer; }
+.page { padding: 20px; text-align: center; }
+#splash { position: fixed; inset: 0; background: var(--p); color: #f2a343; display: flex; justify-content: center; align-items: center; z-index: 9999; font-size: 80px; transition: 0.5s; }
+.main-btn { width: 220px; height: 220px; border-radius: 50%; border: 8px solid #27ae60; background: rgba(255,255,255,0.8); margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
+#counter { font-size: 3.5rem; font-weight: bold; }
+.zekr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.zekr-grid button { padding: 10px; border-radius: 10px; border: 1px solid #ddd; cursor: pointer; }
+.fab-container { position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; gap: 10px; }
+.fab { width: 50px; height: 50px; border-radius: 50%; border: none; background: var(--p); color: white; cursor: pointer; }
+.settings-panel { display: none; position: fixed; bottom: 80px; left: 20px; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+table { width: 100%; border-collapse: collapse; background: white; }
+th, td { padding: 10px; border: 1px solid #eee; }
