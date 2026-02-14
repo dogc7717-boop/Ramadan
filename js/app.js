@@ -1,8 +1,6 @@
 let count = 0;
 const days = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
 
-function hideSplash() { setTimeout(() => document.getElementById('splash').style.opacity = '0', 2000); setTimeout(() => document.getElementById('splash').style.display = 'none', 2500); }
-
 function addCount() { count++; document.getElementById('counter').innerText = count; if(navigator.vibrate) navigator.vibrate(40); }
 
 function resetCounter() { count = 0; document.getElementById('counter').innerText = 0; }
