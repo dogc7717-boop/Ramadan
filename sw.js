@@ -1,4 +1,4 @@
-const cacheName = 'iskar-pro-v4'; // رفعت الإصدار لـ v4 للتأكد من التحديث بعد حذف المسافات
+const cacheName = 'iskar-pro-v4'; 
 const assets = [
   './',
   './index.html',
@@ -7,14 +7,14 @@ const assets = [
   './manifest.json',
   './icon.png',
   './cover.jpg',
-  './Egypt.mp3',     // تم حذف المسافات الزائدة هنا
+  './Egypt.mp3',     
   './Egypt_1.mp3',
   './Egypt_2.mp3',
   './Egypt_3.mp3',
   'https://fonts.googleapis.com/css2?family=Cairo&display=swap'
 ];
 
-// تثبيت الخدمة وحفظ الملفات الجديدة
+// تثبيت الخدمة وحفظ الملفات
 self.addEventListener('install', e => {
   self.skipWaiting(); 
   e.waitUntil(
@@ -24,7 +24,7 @@ self.addEventListener('install', e => {
   );
 });
 
-// تشغيل التطبيق في وضع الأوفلاين
+// وضع الأوفلاين
 self.addEventListener('fetch', e => {
   e.respondWith(
     caches.match(e.request).then(res => {
