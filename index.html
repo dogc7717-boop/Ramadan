@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -7,13 +7,13 @@
     
     <meta property="og:title" content="مسبحة رمضان كريم PRO">
     <meta property="og:description" content="مسبحتك الإلكترونية وإمساكية رمضان 2026 لكل العالم - صدقة جارية">
-    <meta property="og:image" content="https://dogc7717-boop.github.io/Ramadan/cover.jpg">
+    <meta property="og:image" content="./cover.jpg">
     <meta property="og:url" content="https://dogc7717-boop.github.io/Ramadan/">
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="https://dogc7717-boop.github.io/Ramadan/icon.png">
-    <link rel="icon" href="https://dogc7717-boop.github.io/Ramadan/icon.png">
+    <link rel="apple-touch-icon" href="./icon.png">
+    <link rel="icon" href="./icon.png">
 
     <style>
         :root {
@@ -28,11 +28,11 @@
             color: white; font-family: 'Cairo', sans-serif;
             display: flex; flex-direction: column; min-height: 100vh;
             user-select: none;
+            overflow-x: hidden;
         }
 
-        /* زر تثبيت التطبيق */
         #installBtn {
-            display: none; /* هيظهر بس لو المتصفح بيدعم التثبيت */
+            display: none;
             margin: 10px auto;
             padding: 10px 20px;
             background: var(--gold);
@@ -79,6 +79,7 @@
         nav {
             position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.9);
             display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #9c27b0;
+            z-index: 1000;
         }
         nav span { cursor: pointer; color: #aaa; font-size: 0.9rem; }
         nav span.active { color: gold; font-weight: bold; }
@@ -87,9 +88,6 @@
     </style>
 </head>
 <body>
-
-    <audio id="azanAudio" src="https://audio.islamweb.net/audio/download.php?audioid=141873"></audio>
-    <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3" preload="auto"></audio>
 
     <div id="subhaPage">
         <button id="installBtn">📲 تثبيت التطبيق على الهاتف</button>
@@ -121,13 +119,9 @@
             </select>
             <select id="citySelect" onchange="getPrayerTimes()" style="flex:2"></select>
         </div>
-        <select id="moazenSelect" onchange="changeMoazen()">
-            <option value="https://audio.islamweb.net/audio/download.php?audioid=141873">أذان مكة المكرمة</option>
-            <option value="https://audio.islamweb.net/audio/download.php?audioid=141872">أذان المدينة المنورة</option>
-            <option value="https://audio.islamweb.net/audio/download.php?audioid=141880">أذان من مصر</option>
-            <option value="https://audio.islamweb.net/audio/download.php?audioid=214578">مشاري العفاسي</option>
-        </select>
-        <button id="playBtn" onclick="playAzan()" style="width:100%; padding:12px; background:var(--gold); border:none; border-radius:10px; font-weight:bold; margin-bottom:15px;">▶️ تجربة الأذان</button>
+        
+        <button id="playBtn" onclick="playAzan()" style="width:100%; padding:12px; background:var(--gold); border:none; border-radius:10px; font-weight:bold; margin-bottom:15px; color:#331a00;">▶️ تجربة الأذان (مصر)</button>
+        
         <table id="prayerTable">
             <thead><tr><th>الصلاة</th><th>الموعد</th></tr></thead>
             <tbody id="tableBody"></tbody>
@@ -139,107 +133,13 @@
         <a href="https://t.me/+GYhTcjbn_NUyNTA0" target="_blank"><img src="https://img.icons8.com/color/48/telegram-app.png" alt="Telegram"></a>
     </div>
 
-    <div class="rights">تم التطوير بواسطة <b style="color:gold">SAMEHELNADY</b> © 2026</div>
+    <div class="rights">تم التطوير بواسطة <b style="color:gold">ISKAR (SAMEHELNADY)</b> © 2026</div>
 
     <nav>
         <span id="navSubha" class="active" onclick="showPage('subha')">📿 المسبحة</span>
         <span id="navPrayer" onclick="showPage('prayer')">🗓️ الإمساكية</span>
     </nav>
 
-    <script>
-        // كود تشغيل زر التنزيل (PWA)
-        let deferredPrompt;
-        const installBtn = document.getElementById('installBtn');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installBtn.style.display = 'block';
-        });
-
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    installBtn.style.display = 'none';
-                }
-                deferredPrompt = null;
-            }
-        });
-
-        // باقي وظائف المسبحة والإمساكية
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        let count = 0;
-        const egyptCities = [{n:"القاهرة",v:"Cairo"},{n:"الإسكندرية",v:"Alexandria"},{n:"المنصورة",v:"Mansoura"},{n:"أسوان",v:"Aswan"},{n:"بورسعيد",v:"Port Said"}];
-        const worldCapitals = [{n:"مكة المكرمة",v:"Mecca",c:"Saudi Arabia"},{n:"القدس",v:"Jerusalem",c:"Palestine"},{n:"لندن",v:"London",c:"UK"},{n:"اسطنبول",v:"Istanbul",c:"Turkey"}];
-
-        function addCount() {
-            count++;
-            document.getElementById('counter').innerText = count;
-            if(document.getElementById('soundToggle').checked) { 
-                const s = document.getElementById('clickSound'); s.currentTime=0; s.play(); 
-            }
-            if(document.getElementById('vibrateToggle').checked && navigator.vibrate) navigator.vibrate(50);
-        }
-
-        function resetCounter() { count = 0; document.getElementById('counter').innerText = 0; }
-        function setZekr(z) { document.getElementById('zekrName').innerText = z; resetCounter(); }
-
-        function showPage(p) {
-            document.getElementById('subhaPage').style.display = p==='subha'?'block':'none';
-            document.getElementById('prayerPage').style.display = p==='prayer'?'block':'none';
-            document.getElementById('navSubha').className = p==='subha'?'active':'';
-            document.getElementById('navPrayer').className = p==='prayer'?'active':'';
-            if(p==='prayer') updateCityList();
-        }
-
-        function updateCityList() {
-            const r = document.getElementById('regionSelect').value;
-            const s = document.getElementById('citySelect');
-            const t = document.getElementById('prayerTable');
-            s.innerHTML = "";
-            const list = r === "Egypt" ? egyptCities : worldCapitals;
-            t.className = r === "Egypt" ? "region-egypt" : "region-world";
-            list.forEach(c => {
-                let o = document.createElement("option"); o.value=c.v; o.text=c.n;
-                if(c.c) o.setAttribute("data-country", c.c);
-                s.appendChild(o);
-            });
-            getPrayerTimes();
-        }
-
-        async function getPrayerTimes() {
-            const r = document.getElementById('regionSelect').value;
-            const s = document.getElementById('citySelect');
-            const city = s.value;
-            const country = r==="Egypt"?"Egypt":s.options[s.selectedIndex].getAttribute("data-country");
-            const tb = document.getElementById('tableBody');
-            tb.innerHTML = "<tr><td colspan='2'>جاري التحميل...</td></tr>";
-            try {
-                const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=4`);
-                const d = await res.json();
-                const t = d.data.timings;
-                const pAr = {"Fajr":"الفجر","Sunrise":"الشروق","Dhuhr":"الظهر","Asr":"العصر","Maghrib":"المغرب","Isha":"العشاء"};
-                tb.innerHTML = "";
-                for(let k in pAr) tb.innerHTML += `<tr><td style="color:gold">${pAr[k]}</td><td>${t[k]}</td></tr>`;
-            } catch(e) { tb.innerHTML = "<tr><td colspan='2'>خطأ في الاتصال</td></tr>"; }
-        }
-
-        function changeMoazen() {
-            const a = document.getElementById('azanAudio');
-            a.src = document.getElementById('moazenSelect').value;
-            a.pause();
-        }
-
-        function playAzan() {
-            const a = document.getElementById('azanAudio');
-            const b = document.getElementById('playBtn');
-            if(!a.paused) { a.pause(); a.currentTime=0; b.innerText="▶️ تجربة الأذان"; }
-            else { b.innerText="⏳ جاري التحميل..."; a.play().then(()=>b.innerText="⏸️ إيقاف").catch(()=>b.innerText="▶️ تجربة الأذان"); }
-        }
-
-        window.onload = () => updateCityList();
-    </script>
+    <script src="script.js"></script>
 </body>
-            </html>
+          </html>
