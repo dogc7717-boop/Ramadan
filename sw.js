@@ -1,4 +1,4 @@
-const cacheName = 'iskar-pro-v4'; 
+const cacheName = 'iskar-pro-v5'; 
 const assets = [
   './',
   './index.html',
@@ -14,17 +14,18 @@ const assets = [
   'https://fonts.googleapis.com/css2?family=Cairo&display=swap'
 ];
 
-// تثبيت الخدمة وحفظ الملفات
+// تثبيت الخدمة وحفظ الملفات الجديدة
 self.addEventListener('install', e => {
   self.skipWaiting(); 
   e.waitUntil(
     caches.open(cacheName).then(cache => {
+      console.log('Caching assets...');
       return cache.addAll(assets);
     })
   );
 });
 
-// وضع الأوفلاين
+// تشغيل التطبيق في وضع الأوفلاين
 self.addEventListener('fetch', e => {
   e.respondWith(
     caches.match(e.request).then(res => {
@@ -33,7 +34,7 @@ self.addEventListener('fetch', e => {
   );
 });
 
-// حذف الكاش القديم
+// حذف أي كاش قديم لتفعيل التحديث فوراً
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys => {
