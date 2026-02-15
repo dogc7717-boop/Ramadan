@@ -3,54 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مسبحة رمضان كريم PRO | ISKAR</title>
+    
+    <title>مسبحة رمضان كريم ISKAR | PRO</title>
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dogc7717-boop.github.io/Ramadan/">
+    <meta property="og:title" content="مسبحة رمضان كريم ISKAR | PRO">
+    <meta property="og:description" content="تطبيق المسبحة الإلكترونية وإمساكية رمضان 2026 - متاح الآن للتثبيت على الموبايل والعمل بدون إنترنت">
+    
+    <meta property="og:image" content="https://dogc7717-boop.github.io/Ramadan/cover.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://dogc7717-boop.github.io/Ramadan/cover.jpg">
+    <meta name="theme-color" content="#B8860B">
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="./icon.png">
-    <link rel="icon" href="./icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
 
     <style>
-        :root {
-            --gold: linear-gradient(180deg, #FFD700 0%, #B8860B 100%);
-            --purple-glow: 0 0 20px rgba(156, 39, 176, 0.7);
-            --bg-dark: #0a0e17;
-        }
-        body {
-            margin: 0; padding: 0;
-            background: var(--bg-dark) radial-gradient(circle at center, #1a237e 0%, #0a0e17 100%);
-            color: white; font-family: 'Cairo', sans-serif;
-            display: flex; flex-direction: column; min-height: 100vh;
-            user-select: none; overflow-x: hidden;
-        }
+        :root { --gold: linear-gradient(180deg, #FFD700 0%, #B8860B 100%); --bg-dark: #0a0e17; }
+        body { margin: 0; padding: 0; background: var(--bg-dark) radial-gradient(circle at center, #1a237e 0%, #0a0e17 100%); color: white; font-family: 'Cairo', sans-serif; display: flex; flex-direction: column; min-height: 100vh; user-select: none; overflow-x: hidden; }
         
-        /* زر التثبيت الأخضر الثابت */
-        #installBtn {
-            display: block; position: fixed; top: 10px; left: 10px; z-index: 2000;
-            padding: 5px 15px; background: #28a745; color: white; border: none;
-            border-radius: 15px; font-size: 0.8rem; font-weight: bold; cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-
-        /* نافذة جاري التحميل */
-        #loadingModal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 3000; justify-content: center; align-items: center; flex-direction: column;
-        }
-        .loader {
-            border: 5px solid #f3f3f3; border-top: 5px solid #28a745; border-radius: 50%;
-            width: 50px; height: 50px; animation: spin 1s linear infinite;
-        }
+        #installBtn { display: block; position: fixed; top: 10px; left: 10px; z-index: 2000; padding: 5px 15px; background: #28a745; color: white; border: none; border-radius: 15px; font-size: 0.8rem; font-weight: bold; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        #loadingModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
+        .loader { border: 5px solid #f3f3f3; border-top: 5px solid #28a745; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        #updateToast { display: none; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, #28a745, #218838); color: white; padding: 12px 20px; border-radius: 50px; box-shadow: 0 10px 20px rgba(0,0,0,0.4); z-index: 9999; font-size: 0.9rem; font-weight: bold; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popUp { from { bottom: -50px; opacity: 0; } to { bottom: 90px; opacity: 1; } }
 
         .zekr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px; margin-top: 50px; }
         .zekr-grid button { background: var(--gold); border: none; border-radius: 12px; padding: 12px 5px; font-weight: bold; color: #331a00; }
         .counter-container { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .main-circle {
-            width: 180px; height: 180px; border: 6px solid #9c27b0; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            background: rgba(156, 39, 176, 0.1); box-shadow: var(--purple-glow); cursor: pointer;
-        }
+        .main-circle { width: 180px; height: 180px; border: 6px solid #9c27b0; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: rgba(156, 39, 176, 0.1); box-shadow: 0 0 20px rgba(156, 39, 176, 0.7); cursor: pointer; }
         #counter { font-size: 4rem; font-weight: bold; color: #00ff88; }
         #prayerPage { padding: 15px; display: none; margin-bottom: 80px; }
         select { width: 100%; padding: 12px; background: #1a237e; color: gold; border: 1px solid gold; border-radius: 10px; margin-bottom: 10px; font-family: 'Cairo'; }
@@ -65,11 +52,8 @@
 <body>
 
     <button id="installBtn">📲 تثبيت</button>
-
-    <div id="loadingModal">
-        <div class="loader"></div>
-        <p style="color: white; margin-top: 15px;">جاري تثبيت التطبيق...</p>
-    </div>
+    <div id="loadingModal"><div class="loader"></div><p style="color: white; margin-top: 15px;">جاري تثبيت التطبيق...</p></div>
+    <div id="updateToast" onclick="location.reload()">✨ تحديث جديد متوفر.. اضغط للتنشيط</div>
 
     <div id="subhaPage">
         <div class="zekr-grid">
@@ -79,9 +63,7 @@
         </div>
         <div class="counter-container">
             <div id="zekrName" style="margin-bottom:10px; font-size: 1.2rem; color: gold;">سبحان الله</div>
-            <div class="main-circle" onclick="addCount()">
-                <div id="counter">0</div>
-            </div>
+            <div class="main-circle" onclick="addCount()"><div id="counter">0</div></div>
             <div style="margin-top: 15px; display: flex; gap: 15px;">
                 <label><input type="checkbox" id="soundToggle" checked> 🔊 صوت</label>
                 <label><input type="checkbox" id="vibrateToggle" checked> 📳 اهتزاز</label>
@@ -92,12 +74,8 @@
 
     <div id="prayerPage">
         <h3 style="text-align:center; color:gold;">إمساكية رمضان 🌙</h3>
-        <select id="regionSelect" onchange="updateCityList()">
-            <option value="Egypt">مصر 🇪🇬</option>
-            <option value="World">العالم 🌍</option>
-        </select>
+        <select id="regionSelect" onchange="updateCityList()"><option value="Egypt">مصر 🇪🇬</option><option value="World">العالم 🌍</option></select>
         <select id="citySelect" onchange="getPrayerTimes()"></select>
-        
         <label style="color:gold; font-size:0.9rem;">اختر المؤذن:</label>
         <select id="moazenSelect">
             <option value="Egypt.mp3">أذان مصر 1</option>
@@ -106,11 +84,7 @@
             <option value="Egypt_3.mp3">أذان مصر 4</option>
         </select>
         <button id="playBtn" onclick="playAzan()" style="width:100%; padding:12px; background:var(--gold); border:none; border-radius:10px; font-weight:bold; color:#331a00; margin-bottom:15px;">▶️ تجربة الأذان</button>
-        
-        <table id="prayerTable">
-            <thead><tr><th>الصلاة</th><th>الموعد</th></tr></thead>
-            <tbody id="tableBody"></tbody>
-        </table>
+        <table id="prayerTable"><thead><tr><th>الصلاة</th><th>الموعد</th></tr></thead><tbody id="tableBody"></tbody></table>
     </div>
 
     <div class="rights">تم التطوير بواسطة <b style="color:gold">ISKAR</b> © 2026</div>
@@ -122,4 +96,4 @@
 
     <script src="script.js"></script>
 </body>
-                </html>
+</html>
