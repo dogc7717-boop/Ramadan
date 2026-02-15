@@ -1,4 +1,4 @@
-const cacheName = 'iskar-pro-v6'; // إصدار جديد
+const cacheName = 'iskar-pro-v7';
 const assets = ['./', './index.html', './style.css', './script.js', './manifest.json', './Egypt.mp3', './Egypt_1.mp3', './Egypt_2.mp3', './Egypt_3.mp3'];
 self.addEventListener('install', e => {
   self.skipWaiting();
