@@ -9,7 +9,7 @@ let audioCtx;
 
 console.log("%cDeveloped by ISKAR", "color:gold; font-size:25px; font-weight:bold; text-shadow: 2px 2px 5px black;");
 
-// 1. وظيفة التسبيح
+// 1. وظيفة التسبيح (تكة + اهتزاز)
 function addCount() { 
     count++; 
     const counterDisplay = document.getElementById('counter');
@@ -39,21 +39,20 @@ function addCount() {
     }
 }
 
-// 2. وظيفة الأذان (تم تعديل الأسماء لتطابق GitHub)
+// 2. وظيفة الأذان (مطابقة لأسماء الملفات الجديدة بالإنجليزية)
 function playAzan() {
     const azanFiles = ["Egypt.mp3", "Egypt_1.mp3", "Egypt_2.mp3", "Egypt_3.mp3"];
-    
     const randomAzan = azanFiles[Math.floor(Math.random() * azanFiles.length)];
     const audio = new Audio(randomAzan);
     
     audio.play().then(() => {
         console.log("تم تشغيل الأذان بنجاح: " + randomAzan);
     }).catch(err => {
-        console.log("يرجى لمس الصفحة مرة واحدة لتفعيل الصوت.");
+        console.log("المتصفح يمنع الصوت التلقائي، المس الشاشة (سبح) أولاً.");
     });
 }
 
-// 3. مراقبة الوقت
+// 3. مراقبة الوقت ومقارنته بجدول المواعيد
 function monitorPrayerTimes() {
     const now = new Date();
     const hr = now.getHours().toString().padStart(2, '0');
@@ -67,6 +66,7 @@ function monitorPrayerTimes() {
             if (window.lastAzanTime !== currentTime) {
                 playAzan();
                 window.lastAzanTime = currentTime;
+                console.log("حان الآن موعد الأذان: " + currentTime);
             }
         }
     });
@@ -74,7 +74,7 @@ function monitorPrayerTimes() {
 
 setInterval(monitorPrayerTimes, 20000);
 
-// 4. وظائف التنقل والتحكم
+// 4. وظائف التنقل بين الصفحات
 function showPage(pageId) {
     const subhaPage = document.getElementById('subhaPage');
     const prayerPage = document.getElementById('prayerPage');
