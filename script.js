@@ -8,10 +8,10 @@ const assets = [
   './icon.png',
   './cover.jpg',
   // إضافة ملفات الأذان الجديدة للقائمة لتعمل بدون إنترنت
-  './اذان مصر.mp3',
-  './اذان مصر 1.mp3',
-  './اذان مصر 2.mp3',
-  './اذان مصر 3.mp3',
+  './ Egypt_1.mp3',
+  './ Egypt_2.mp3',
+  './ Egypt_3.mp3',
+  './ Egypt_4.mp3',
   'https://fonts.googleapis.com/css2?family=Cairo&display=swap'
 ];
 
