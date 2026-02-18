@@ -1,10 +1,11 @@
- /**
+/**
  * ISKAR - Ramadan Application 2026
  * Developed by: ISKAR (Sameh Elnady)
  */
 
 let count = 0;
 let deferredPrompt;
+let adhanPreviewAudio = new Audio();
 
 const azkarData = {
     sabah: ["أصبحنا وأصبح الملك لله والحمد لله", "يا حي يا قيوم برحمتك أستغيث", "اللهم أنت ربي لا إله إلا أنت", "سبحان الله وبحمده عدد خلقه"],
@@ -31,11 +32,7 @@ function showPage(p) {
 function addCount() {
     count++;
     document.getElementById('counter').innerText = count;
-    
-    if(document.getElementById('vibrateToggle').checked && navigator.vibrate) {
-        navigator.vibrate(50);
-    }
-    
+    if(document.getElementById('vibrateToggle').checked && navigator.vibrate) navigator.vibrate(50);
     if(document.getElementById('soundToggle').checked) {
         let audio = new Audio('https://assets.mixkit.co/active_storage/sfx/3005/3005-preview.mp3');
         audio.volume = 0.2;
@@ -44,7 +41,7 @@ function addCount() {
 }
 function resetCounter() { count = 0; document.getElementById('counter').innerText = 0; }
 
-// --- الأذكار التلقائية ---
+// --- الأذكار ---
 function loadAzkar() {
     const h = new Date().getHours();
     const isMorning = (h >= 5 && h < 12);
@@ -56,47 +53,79 @@ function loadAzkar() {
 }
 
 function showPopUp() {
-    // التحقق من مفتاح التشغيل
     if (!document.getElementById('autoAzkarToggle').checked) return;
-
     const rand = azkarData.random[Math.floor(Math.random() * azkarData.random.length)];
     document.getElementById('azkarPopText').innerText = rand;
     document.getElementById('azkarOverlay').style.display = 'flex';
-    
-    if (Notification.permission === "granted") {
-        new Notification("✨ تذكير بالذكر", { body: rand });
-    }
+    if (Notification.permission === "granted") new Notification("✨ تذكير بالذكر", { body: rand });
 }
 
-function closeAzkarWindow() {
-    document.getElementById('azkarOverlay').style.display = 'none';
-}
+function closeAzkarWindow() { document.getElementById('azkarOverlay').style.display = 'none'; }
 
-// --- المواقيت ---
+// --- المواقيت والأذان ---
 async function getPrayerTimes() {
     const city = document.getElementById('citySelect').value;
     const tableDiv = document.getElementById('prayerTable');
     tableDiv.innerHTML = "<p style='text-align:center'>جاري التحديث...</p>";
     
+    // خريطة الدول
+    let country = "Egypt";
+    const countryMap = { 
+        "Mecca":"Saudi Arabia", "Medina":"Saudi Arabia", "Dubai":"UAE", 
+        "Jerusalem":"Palestine", "Paris":"France", "Madrid":"Spain", 
+        "Rome":"Italy", "New York":"USA" 
+    };
+    if(countryMap[city]) country = countryMap[city];
+
     try {
-        const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Egypt&method=4`);
+        const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=4`);
         const data = await res.json();
         const t = data.data.timings;
-        
+        window.currentTimings = t; // حفظ للأذان التلقائي
+
         tableDiv.innerHTML = `
             <table>
-                <tr class="highlight"><td>🕒 الإمساك (سحور)</td><td>${t.Imsak}</td></tr>
+                <tr class="highlight"><td>🕒 الإمساك</td><td>${t.Imsak}</td></tr>
                 <tr><td>الفجر</td><td>${t.Fajr}</td></tr>
                 <tr><td>الظهر</td><td>${t.Dhuhr}</td></tr>
                 <tr><td>العصر</td><td>${t.Asr}</td></tr>
-                <tr class="highlight"><td>🌅 المغرب (إفطار)</td><td>${t.Maghrib}</td></tr>
+                <tr class="highlight"><td>🌅 المغرب</td><td>${t.Maghrib}</td></tr>
                 <tr><td>العشاء</td><td>${t.Isha}</td></tr>
-            </table>
-        `;
+            </table>`;
     } catch(e) { tableDiv.innerHTML = "<p style='color:red'>خطأ في تحميل المواقيت</p>"; }
 }
 
-// --- النظام التلقائي وحفظ الإعدادات ---
+// --- إعدادات الأذان ---
+function saveAdhanPreference() {
+    localStorage.setItem('userAdhanChoice', document.getElementById('adhanSelect').value);
+}
+
+function playAdhanPreview() {
+    adhanPreviewAudio.src = document.getElementById('adhanSelect').value;
+    adhanPreviewAudio.play().catch(() => alert("تأكد من وجود ملف الصوت في مجلد التطبيق"));
+}
+
+function stopAdhanPreview() {
+    adhanPreviewAudio.pause();
+    adhanPreviewAudio.currentTime = 0;
+}
+
+function checkPrayerTime() {
+    if (!window.currentTimings) return;
+    const now = new Date();
+    const timeNow = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+    const prayerNames = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+    
+    prayerNames.forEach(p => {
+        if (window.currentTimings[p] === timeNow && now.getSeconds() === 0) {
+            const voice = localStorage.getItem('userAdhanChoice') || 'Egypt.mp3';
+            new Audio(voice).play().catch(() => console.log("التفاعل مطلوب لتشغيل الأذان"));
+        }
+    });
+}
+
+// --- التشغيل عند التحميل ---
+setInterval(checkPrayerTime, 1000);
 setInterval(() => {
     const now = new Date();
     if (now.getMinutes() === 0 && now.getSeconds() < 2) showPopUp();
@@ -105,25 +134,20 @@ setInterval(() => {
 window.onload = () => {
     getPrayerTimes();
     if ("Notification" in window) Notification.requestPermission();
+    
+    const savedVoice = localStorage.getItem('userAdhanChoice');
+    if(savedVoice) document.getElementById('adhanSelect').value = savedVoice;
 
-    // استعادة الإعدادات المحفوظة
     const autoState = localStorage.getItem('autoAzkar');
     if (autoState !== null) document.getElementById('autoAzkarToggle').checked = (autoState === 'true');
 
-    // حفظ الإعدادات عند التغيير
     document.getElementById('autoAzkarToggle').addEventListener('change', (e) => {
         localStorage.setItem('autoAzkar', e.target.checked);
     });
-
-    // تذكير أول عند الدخول بـ 3 ثواني
-    setTimeout(showPopUp, 3000);
 };
 
-// --- PWA Installation ---
+// PWA
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
 document.getElementById('installBtn').onclick = () => {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt = null;
-    } else { alert("التطبيق جاهز أو مثبت بالفعل."); }
+    if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; }
 };
