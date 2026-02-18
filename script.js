@@ -68,7 +68,6 @@ async function getPrayerTimes() {
     const tableDiv = document.getElementById('prayerTable');
     tableDiv.innerHTML = "<p style='text-align:center'>جاري التحديث...</p>";
     
-    // خريطة الدول
     let country = "Egypt";
     const countryMap = { 
         "Mecca":"Saudi Arabia", "Medina":"Saudi Arabia", "Dubai":"UAE", 
@@ -81,7 +80,7 @@ async function getPrayerTimes() {
         const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=4`);
         const data = await res.json();
         const t = data.data.timings;
-        window.currentTimings = t; // حفظ للأذان التلقائي
+        window.currentTimings = t;
 
         tableDiv.innerHTML = `
             <table>
@@ -95,14 +94,20 @@ async function getPrayerTimes() {
     } catch(e) { tableDiv.innerHTML = "<p style='color:red'>خطأ في تحميل المواقيت</p>"; }
 }
 
-// --- إعدادات الأذان ---
+// --- إعدادات الأذان (تم تصحيح المسارات) ---
 function saveAdhanPreference() {
     localStorage.setItem('userAdhanChoice', document.getElementById('adhanSelect').value);
 }
 
 function playAdhanPreview() {
-    adhanPreviewAudio.src = document.getElementById('adhanSelect').value;
-    adhanPreviewAudio.play().catch(() => alert("تأكد من وجود ملف الصوت في مجلد التطبيق"));
+    const selectedFile = document.getElementById('adhanSelect').value;
+    // إضافة ./ للتأكد من البحث في المجلد الحالي
+    adhanPreviewAudio.src = "./" + selectedFile; 
+    adhanPreviewAudio.load(); // إعادة تحميل الملف
+    adhanPreviewAudio.play().catch((err) => {
+        console.error("خطأ في تشغيل الصوت:", err);
+        alert("تعذر تشغيل الملف: " + selectedFile + "\nتأكد من الضغط على الشاشة أولاً لتفعيل الصوت.");
+    });
 }
 
 function stopAdhanPreview() {
@@ -119,12 +124,13 @@ function checkPrayerTime() {
     prayerNames.forEach(p => {
         if (window.currentTimings[p] === timeNow && now.getSeconds() === 0) {
             const voice = localStorage.getItem('userAdhanChoice') || 'Egypt.mp3';
-            new Audio(voice).play().catch(() => console.log("التفاعل مطلوب لتشغيل الأذان"));
+            const audio = new Audio("./" + voice);
+            audio.play().catch(e => console.log("الأذان التلقائي يحتاج تفاعل مع الصفحة"));
         }
     });
 }
 
-// --- التشغيل عند التحميل ---
+// --- التشغيل ---
 setInterval(checkPrayerTime, 1000);
 setInterval(() => {
     const now = new Date();
