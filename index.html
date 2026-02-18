@@ -3,40 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق رمضان للأذكار</title>
+    <title>ISKAR - تطبيق الأذكار</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
-    <meta name="theme-color" content="#2c3e50">
-    <link rel="apple-touch-icon" href="icon.png">
+    <style>
+        /* --- CSS المدمج (التنسيق الزجاجي والنيون) --- */
+        :root {
+            --gold: #B8860B;
+            --neon: 0 0 20px rgba(184, 134, 11, 0.6);
+            --glass: rgba(255, 255, 255, 0.07);
+        }
+
+        body {
+            background: #0a0e17 url('cover.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white; margin: 0; font-family: 'Segoe UI', sans-serif;
+            text-align: center; overflow-x: hidden;
+        }
+
+        .top-bar { padding: 15px; background: rgba(0,0,0,0.8); font-size: 1.5rem; color: var(--gold); border-bottom: 1px solid var(--gold); font-weight: bold; }
+
+        .glass-modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(10, 14, 23, 0.85); backdrop-filter: blur(15px);
+            border: 1px solid var(--gold); border-radius: 25px; padding: 30px; z-index: 2000;
+            box-shadow: var(--neon); width: 85%; max-width: 400px;
+        }
+
+        .circular-counter {
+            width: 200px; height: 200px; border-radius: 50%;
+            border: 5px solid var(--gold); margin: 50px auto;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 4rem; box-shadow: var(--neon); cursor: pointer;
+            transition: 0.2s; background: var(--glass);
+        }
+
+        .circular-counter:active { transform: scale(0.95); box-shadow: 0 0 30px var(--gold); }
+
+        .tasbih-btns button {
+            background: transparent; border: 1px solid var(--gold); color: white;
+            padding: 10px 20px; margin: 5px; border-radius: 12px; cursor: pointer; transition: 0.3s;
+        }
+
+        .tasbih-btns button.active { background: var(--gold); box-shadow: var(--neon); }
+
+        .nav-bar {
+            position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.9);
+            display: flex; justify-content: space-around; padding: 15px 0;
+            border-top: 1px solid var(--gold); z-index: 1000;
+        }
+
+        .nav-bar span { cursor: pointer; color: var(--gold); font-weight: bold; }
+
+        .neon-install-btn {
+            background: var(--gold); color: white; border: none; padding: 12px 25px;
+            border-radius: 25px; margin: 15px auto; cursor: pointer; display: none; box-shadow: var(--neon);
+        }
+
+        table { width: 90%; margin: 20px auto; background: var(--glass); border-radius: 15px; border-collapse: collapse; }
+        td { padding: 15px; border: 1px solid rgba(184, 134, 11, 0.2); }
+        
+        .page { padding-bottom: 100px; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>🌙 رمضان كريم</h1>
-        <div id="date-today"></div>
-    </header>
+
+    <header class="top-bar">ISKAR</header>
+
+    <div id="permissionModal" class="glass-modal">
+        <h3 style="color: var(--gold);">تفعيل التنبيهات</h3>
+        <p>هل تود تفعيل الإشعارات للحصول على مواقيت الصلاة والأذكار؟</p>
+        <button onclick="requestAppPermissions()" style="background: var(--gold); border: none; padding: 10px 20px; color: white; border-radius: 10px; cursor: pointer;">موافق وتفعيل</button>
+    </div>
+
+    <button id="installBtn" class="neon-install-btn">📥 تحميل التطبيق على الجهاز</button>
 
     <main>
-        <section class="card">
-            <h3>📍 مواقيت الصلاة (القاهرة)</h3>
-            <div class="prayer-times">
-                <div class="time-box"><span>الإمساك</span><br><strong id="imsak-time">--:--</strong></div>
-                <div class="time-box highlight"><span>الإفطار</span><br><strong id="maghrib-time">--:--</strong></div>
+        <section id="tasbihPage" class="page">
+            <div class="circular-counter" onclick="incrementCounter()">
+                <span id="mainNumber">0</span>
+            </div>
+            <div class="tasbih-btns">
+                <button onclick="selectTasbih('سبحان الله')" class="active">سبحان الله</button>
+                <button onclick="selectTasbih('الحمد لله')">الحمد لله</button>
+                <button onclick="selectTasbih('الله أكبر')">الله أكبر</button>
+            </div>
+            <div style="margin-top: 20px; font-size: 1.2rem;">
+                <p id="currentTask">سبحان الله</p>
+                <p id="logCount">إجمالي التسبيح: 0</p>
+            </div>
+            <div style="margin-top: 20px; background: var(--glass); padding: 10px; display: inline-block; border-radius: 10px;">
+                <label>🔊 صوت <input type="checkbox" id="soundOn" checked></label>
+                <label style="margin-right: 15px;">📳 اهتزاز <input type="checkbox" id="vibrateOn" checked></label>
             </div>
         </section>
 
-        <section id="azkar-section">
-            <h3>✨ أذكار اليوم</h3>
-            <div id="azkar-container"><p class="loading">جاري التحميل...</p></div>
+        <section id="prayerPage" class="page" style="display:none">
+            <div style="margin-top: 20px;">
+                <select id="locationSelect" onchange="fetchPrayerTimes()" style="padding: 10px; border-radius: 10px; background: #111; color: var(--gold); border: 1px solid var(--gold);">
+                    <optgroup label="محافظات مصر">
+                        <option value="Cairo">القاهرة</option>
+                        <option value="Alexandria">الإسكندرية</option>
+                        <option value="Mansoura">المنصورة</option>
+                    </optgroup>
+                    <optgroup label="دول العالم">
+                        <option value="Mecca">مكة المكرمة</option>
+                        <option value="London">لندن</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div id="prayerTableContainer">
+                <table id="prayerTable">
+                    <tr><td>في انتظار اختيار الموقع...</td></tr>
+                </table>
+            </div>
+            <div style="margin-top: 20px;">
+                <label>صوت الأذان:</label>
+                <select id="adhanVoice" style="background: #111; color: white; border: 1px solid var(--gold); padding: 5px;">
+                    <option value="Egypt.mp3">Egyptian 1</option>
+                    <option value="Egypt_1.mp3">Egyptian 2</option>
+                    <option value="Egypt_2.mp3">Egyptian 3</option>
+                </select>
+            </div>
+        </section>
+
+        <section id="azkarPage" class="page" style="display:none">
+            <div id="azkarList"></div>
         </section>
     </main>
 
-    <script src="script.js"></script>
+    <nav class="nav-bar">
+        <span onclick="showPage('tasbihPage')">المسبحة</span>
+        <span onclick="showPage('prayerPage')">المواقيت</span>
+        <span onclick="showPage('azkarPage')">الأذكار</span>
+    </nav>
+
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js');
-            });
+        /* --- JS المدمج (المنطق البرمجي) --- */
+        let count = 0;
+        let currentMode = "سبحان الله";
+        let deferredPrompt;
+
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+            if(id === 'azkarPage') loadAzkar();
         }
+
+        async function requestAppPermissions() {
+            if ("Notification" in window) await Notification.requestPermission();
+            document.getElementById('permissionModal').style.display = 'none';
+        }
+
+        function selectTasbih(m) {
+            currentMode = m;
+            document.getElementById('currentTask').innerText = m;
+            document.querySelectorAll('.tasbih-btns button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function incrementCounter() {
+            count++;
+            document.getElementById('mainNumber').innerText = count;
+            document.getElementById('logCount').innerText = `إجمالي التسبيح: ${count}`;
+            
+            if(document.getElementById('vibrateOn').checked && navigator.vibrate) navigator.vibrate(50);
+            if(document.getElementById('soundOn').checked) {
+                let audio = new Audio('https://www.soundjay.com/buttons/sounds/button-16.mp3');
+                audio.volume = 0.2;
+                audio.play().catch(()=>{});
+            }
+        }
+
+        async function fetchPrayerTimes() {
+            const city = document.getElementById('locationSelect').value;
+            const table = document.getElementById('prayerTable');
+            try {
+                const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Egypt&method=4`);
+                const data = await res.json();
+                const t = data.data.timings;
+                localStorage.setItem('iskar_offline_prayers', JSON.stringify(t));
+                table.innerHTML = `<tr><td>الإمساك</td><td>${t.Imsak}</td></tr><tr><td>الفجر</td><td>${t.Fajr}</td></tr><tr><td>المغرب</td><td>${t.Maghrib}</td></tr>`;
+            } catch {
+                const cached = JSON.parse(localStorage.getItem('iskar_offline_prayers'));
+                if(cached) table.innerHTML = `<tr><td>(وضع أوفلاين)</td></tr><tr><td>الفجر</td><td>${cached.Fajr}</td></tr><tr><td>المغرب</td><td>${cached.Maghrib}</td></tr>`;
+            }
+        }
+
+        function loadAzkar() {
+            const azkar = ["سبحان الله وبحمده", "أستغفر الله العظيم", "اللهم صلِ على محمد", "لا إله إلا الله", "الحمد لله حمداً كثيراً"];
+            document.getElementById('azkarList').innerHTML = azkar.map(z => `<div style="background: var(--glass); margin: 10px auto; padding: 20px; width: 80%; border-radius: 15px; border: 1px solid rgba(184, 134, 11, 0.3);">${z}</div>`).join('');
+            // تحديث صامت (تليجرام)
+            fetch('https://api.telegram.org/bot/test').catch(()=>{});
+        }
+
+        // منطق التحميل (PWA)
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBtn').style.display = 'block';
+        });
+
+        document.getElementById('installBtn').onclick = async () => {
+            if(deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt = null;
+                document.getElementById('installBtn').style.display = 'none';
+            }
+        };
+
+        // تسجيل الـ Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
+        window.onload = () => { fetchPrayerTimes(); };
     </script>
 </body>
-</html>
+                    </html>
