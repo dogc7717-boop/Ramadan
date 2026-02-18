@@ -1,1 +1,92 @@
-var _0x4f12=["\x69\x6E\x6E\x65\x72\x54\x65\x78\x74","\x63\x6F\x75\x6E\x74\x65\x72","\x67\x65\x74\x45\x6C\x65\x6D\x65\x6E\x74\x42\x79\x49\x64","\x76\x69\x62\x72\x61\x74\x65","\x70\x6C\x61\x79","\x70\x72\x61\x79\x65\x72\x5F\x74\x69\x6D\x69\x6E\x67\x73","\x6C\x6F\x63\x61\x6C\x53\x74\x6F\x72\x61\x67\x65"];let _0xb21=0;let _0xa12=new Audio('https://www.islamcan.com/audio/adan/azan1.mp3');let _0xlast="";function increment(){_0xb21++;document[_0x4f12[2]](_0x4f12[1])[_0x4f12[0]]=_0xb21;if(navigator[_0x4f12[3]])navigator[_0x4f12[3]](50)}function resetCounter(){_0xb21=0;document[_0x4f12[2]](_0x4f12[1])[_0x4f12[0]]=_0xb21}async function setupAppPermissions(){const ctx=window.AudioContext||window.webkitAudioContext;if(ctx){const aCtx=new ctx();if(aCtx.state==='suspended')await aCtx.resume()}document[_0x4f12[2]]('permission-overlay').style.display='none';updatePrayerTimes()}async function updatePrayerTimes(){const url="https://api.aladhan.com/v1/timingsByCity?city=Cairo&country=Egypt&method=5";try{const res=await fetch(url);const d=await res.json();localStorage.setItem(_0x4f12[5],JSON.stringify(d.data.timings));displayTimings(d.data.timings)}catch(e){const s=localStorage.getItem(_0x4f12[5]);if(s)displayTimings(JSON.parse(s))}}function displayTimings(t){const n={Fajr:"الفجر",Dhuhr:"الظهر",Asr:"العصر",Maghrib:"المغرب",Isha:"العشاء"};let h="";for(let k in n){h+=`<div class="prayer-row"><span>${n[k]}</span><strong>${t[k].split(' ')[0]}</strong></div>`}document[_0x4f12[2]]('prayer-table').innerHTML=h}setInterval(()=>{const s=localStorage.getItem(_0x4f12[5]);if(!s)return;const t=JSON.parse(s);const now=new Date();const cur=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;["Fajr","Dhuhr","Asr","Maghrib","Isha"].forEach(p=>{if(t[p].split(' ')[0]===cur&&_0xlast!==p){_0xa12[_0x4f12[4]]();_0xlast=p}})},60000);
+let count = 0;
+let isSound = true;
+let isVibrate = true;
+let lastAzan = "";
+const azanAudios = {
+    azan1: new Audio('https://www.islamcan.com/audio/adan/azan1.mp3'),
+    azan2: new Audio('https://www.islamcan.com/audio/adan/azan2.mp3'),
+    azan3: new Audio('https://www.islamcan.com/audio/adan/azan3.mp3')
+};
+
+// 1. نظام المسبحة والسجل
+function increment() {
+    count++;
+    document.getElementById('mainCounter').innerText = count;
+    if (isSound) new Audio('https://www.soundjay.com/buttons/button-16.mp3').play().catch(()=>{});
+    if (isVibrate && navigator.vibrate) navigator.vibrate(50);
+    
+    if (count % 33 === 0) {
+        let thikr = document.getElementById('thikrSelect').value;
+        let logList = document.getElementById('logList');
+        let li = document.createElement('li');
+        li.innerText = `✔️ ${thikr}: تم إكمال 33 (${new Date().toLocaleTimeString('ar-EG')})`;
+        logList.prepend(li);
+    }
+}
+
+function resetCounter() {
+    count = 0;
+    document.getElementById('mainCounter').innerText = count;
+}
+
+function toggleSound() { isSound = !isSound; document.getElementById('soundToggle').innerText = isSound ? "🔊 صوت" : "🔇 صامت"; }
+function toggleVibrate() { isVibrate = !isVibrate; document.getElementById('vibrateToggle').innerText = isVibrate ? "📳 اهتزاز" : "📵 إيقاف"; }
+
+// 2. مواقيت الصلاة والأوفلاين
+async function updatePrayerTimes() {
+    const country = document.getElementById('countrySelect').value;
+    const API = `https://api.aladhan.com/v1/timingsByCity?city=Cairo&country=${country}&method=5`;
+    
+    try {
+        const res = await fetch(API);
+        const data = await res.json();
+        const timings = data.data.timings;
+        localStorage.setItem("prayer_timings", JSON.stringify(timings));
+        displayTimings(timings);
+    } catch (e) {
+        const saved = localStorage.getItem("prayer_timings");
+        if (saved) displayTimings(JSON.parse(saved));
+    }
+}
+
+function displayTimings(t) {
+    const names = { Fajr: "الفجر", Dhuhr: "الظهر", Asr: "العصر", Maghrib: "المغرب", Isha: "العشاء" };
+    let h = "";
+    for (let k in names) {
+        h += `<div class="prayer-row"><span>${names[k]}</span><strong>${t[k].split(' ')[0]}</strong></div>`;
+    }
+    document.getElementById('prayer-table').innerHTML = h;
+}
+
+// 3. نظام الأذان
+function testAzan() {
+    const v = document.getElementById('azanVoice').value;
+    azanAudios[v].play();
+    setTimeout(() => { azanAudios[v].pause(); azanAudios[v].currentTime = 0; }, 5000);
+}
+
+setInterval(() => {
+    const saved = localStorage.getItem("prayer_timings");
+    if (!saved) return;
+    const t = JSON.parse(saved);
+    const now = new Date();
+    const cur = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+    
+    ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"].forEach(p => {
+        if (t[p].split(' ')[0] === cur && lastAzan !== p) {
+            const v = document.getElementById('azanVoice').value;
+            azanAudios[v].play();
+            lastAzan = p;
+        }
+    });
+}, 60000);
+
+async function setupAppPermissions() {
+    document.getElementById('permission-overlay').style.display = 'none';
+    updatePrayerTimes();
+}
+
+window.onload = () => {
+    const saved = localStorage.getItem("prayer_timings");
+    if (saved) displayTimings(JSON.parse(saved));
+};
