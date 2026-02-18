@@ -3,97 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أذكار برو 2026 - النسخة الشاملة</title>
-    <link rel="stylesheet" href="style.css">
+    <title>رمضان المبارك V2.0</title>
     <link rel="manifest" href="manifest.json">
-</head>
-<body oncontextmenu="return false;">
+    <style>
+        :root {
+            --main-color: #008080; /* التركواز الأصلي */
+            --gold-color: #D4AF37; /* الذهبي */
+            --bg-color: #f4f4f4;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0; padding: 20px; text-align: center;
+        }
+        .container { max-width: 500px; margin: auto; }
+        h1 { color: var(--main-color); }
+        
+        /* تصميم الأزرار كما في تطبيقك */
+        .card {
+            background: white; border-radius: 15px;
+            padding: 15px; margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-right: 5px solid var(--gold-color);
+        }
+        .btn-main {
+            background-color: var(--main-color);
+            color: white; border: none; padding: 12px 25px;
+            border-radius: 25px; cursor: pointer; font-size: 16px;
+            width: 100%; transition: 0.3s; margin-top: 10px;
+        }
+        .btn-main:active { transform: scale(0.95); }
 
-    <div id="permission-overlay">
-        <div class="permission-card">
-            <h3>مرحباً بك ✨</h3>
-            <p>لتفعيل صوت الأذان وحفظ سجل أذكارك، يرجى الضغط أدناه:</p>
-            <button class="btn-neon" onclick="setupAppPermissions()">✅ تفعيل النظام</button>
+        /* المذكرة اليومية */
+        .task-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px; border-bottom: 1px solid #eee;
+        }
+        .task-item input { transform: scale(1.5); cursor: pointer; }
+
+        /* آية اليوم */
+        #daily-verse { font-style: italic; color: #555; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🌙 رمضان المبارك V2.0</h1>
+
+    <div class="card">
+        <h3>✨ آية اليوم</h3>
+        <p id="daily-verse">جاري التحميل...</p>
+        <small id="verse-ref" style="color: var(--gold-color)"></small>
+    </div>
+
+    <div class="card">
+        <h3>📝 مذكرة الإنجاز</h3>
+        <div id="checklist">
+            <div class="task-item"><span>صلاة الفجر</span> <input type="checkbox" onchange="saveTask(0)"></div>
+            <div class="task-item"><span>ورد القرآن</span> <input type="checkbox" onchange="saveTask(1)"></div>
+            <div class="task-item"><span>أذكار الصباح</span> <input type="checkbox" onchange="saveTask(2)"></div>
         </div>
     </div>
 
-    <div class="main-container">
-        
-        <section class="app-section">
-            <h3>📿 المسبحة الإلكترونية</h3>
-            <div class="settings-row">
-                <button class="btn-neon-sm" id="soundToggle" onclick="toggleSound()">🔊 صوت</button>
-                <button class="btn-neon-sm" id="vibrateToggle" onclick="toggleVibrate()">📳 اهتزاز</button>
-            </div>
-            
-            <div class="counter-display" id="mainCounter">0</div>
-            
-            <select id="thikrSelect" class="styled-select">
-                <option value="سبحان الله">سبحان الله</option>
-                <option value="الحمد لله">الحمد لله</option>
-                <option value="الله أكبر">الله أكبر</option>
-                <option value="لا إله إلا الله">لا إله إلا الله</option>
-                <option value="أستغفر الله">أستغفر الله</option>
-            </select>
-
-            <div class="button-group">
-                <button class="btn-neon large pulse" onclick="increment()">تسبِيح</button>
-                <button class="btn-neon" onclick="resetCounter()">تصفير</button>
-            </div>
-            
-            <div class="logs-container">
-                <h4>📝 سجل التسابيح المكتملة:</h4>
-                <ul id="logList"></ul>
-            </div>
-        </section>
-
-        <section class="app-section">
-            <h3>📖 حصن المسلم</h3>
-            <div class="thikr-card">
-                <p id="azkarText">أذكار الصباح والمساء</p>
-                <button class="btn-neon-sm" onclick="nextThikr()">الذكر التالي ⬅️</button>
-            </div>
-        </section>
-
-        <section class="app-section">
-            <h3>🗓️ مواقيت الصلاة والأذان</h3>
-            <select id="countrySelect" class="styled-select" onchange="updatePrayerTimes()">
-                <option value="Egypt">مصر (القاهرة)</option>
-                <option value="Saudi Arabia">السعودية (مكة)</option>
-                <option value="Palestine">فلسطين (القدس)</option>
-                <option value="Jordan">الأردن</option>
-                <option value="Morocco">المغرب</option>
-            </select>
-
-            <div id="prayer-table">
-                </div>
-
-            <div class="azan-settings">
-                <h4>🔊 صوت الأذان:</h4>
-                <select id="azanVoice" class="styled-select">
-                    <option value="azan1">أذان مكة</option>
-                    <option value="azan2">أذان مدني</option>
-                    <option value="azan3">أذان الأقصى</option>
-                </select>
-                <button class="btn-neon-sm" onclick="testAzan()">▶️ تجربة الصوت</button>
-            </div>
-        </section>
-
+    <div class="card">
+        <h3>📿 المسبحة الإلكترونية</h3>
+        <h2 id="counter-display" style="color: var(--main-color)">0</h2>
+        <button class="btn-main" onclick="incrementTasbih()">سبّح الآن</button>
+        <button onclick="resetCounter()" style="background:none; border:none; color:red; cursor:pointer; margin-top:10px;">تصفير</button>
     </div>
+</div>
 
-    <nav class="nav-bar">
-        <button class="btn-neon-sm active">📿 المسبحة</button>
-        <button class="btn-neon-sm">📖 الأذكار</button>
-        <button class="btn-neon-sm">🗓️ الإمساكية</button>
-    </nav>
+<script>
+    // 1. بيانات آية اليوم
+    const verses = [
+        {t: "وَاسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ", r: "البقرة: 45"},
+        {t: "يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ", r: "البقرة: 183"},
+        {t: "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ", r: "البقرة: 186"}
+    ];
 
-    <div class="charity-bar">هذا التطبيق صدقة جارية ✨</div>
+    // 2. تشغيل الميزات عند التحميل
+    window.onload = () => {
+        loadDailyVerse();
+        loadProgress();
+        registerSW();
+        // طلب إذن التنبيهات والصوت
+        if (Notification.permission !== 'granted') Notification.requestPermission();
+    };
 
-    <script src="script.js"></script>
-    <script>
+    function loadDailyVerse() {
+        const day = new Date().getDate() % verses.length;
+        document.getElementById('daily-verse').innerText = verses[day].t;
+        document.getElementById('verse-ref').innerText = verses[day].r;
+    }
+
+    // 3. منطق المسبحة مع الاهتزاز
+    let count = localStorage.getItem('count') || 0;
+    document.getElementById('counter-display').innerText = count;
+
+    function incrementTasbih() {
+        count++;
+        document.getElementById('counter-display').innerText = count;
+        localStorage.setItem('count', count);
+        if (navigator.vibrate) navigator.vibrate(50); // اهتزاز بسيط
+    }
+
+    function resetCounter() {
+        count = 0;
+        document.getElementById('counter-display').innerText = 0;
+        localStorage.setItem('count', 0);
+    }
+
+    // 4. منطق المذكرة (حفظ تلقائي)
+    function saveTask(index) {
+        let tasks = JSON.parse(localStorage.getItem('userTasks')) || [false, false, false];
+        const checkboxes = document.querySelectorAll('#checklist input');
+        tasks[index] = checkboxes[index].checked;
+        localStorage.setItem('userTasks', JSON.stringify(tasks));
+    }
+
+    function loadProgress() {
+        let tasks = JSON.parse(localStorage.getItem('userTasks')) || [false, false, false];
+        const checkboxes = document.querySelectorAll('#checklist input');
+        tasks.forEach((status, i) => { if(checkboxes[i]) checkboxes[i].checked = status; });
+    }
+
+    // تسجيل الـ Service Worker
+    async function registerSW() {
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+            try { await navigator.serviceWorker.register('sw.js'); } 
+            catch (e) { console.log('SW registration failed'); }
         }
-    </script>
+    }
+</script>
 </body>
-    </html>
+</html>
