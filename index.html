@@ -7,7 +7,7 @@
 
     <meta property="og:title" content="ISKAR - تطبيقك الرمضاني">
     <meta property="og:image" content="https://dogc7717-boop.github.io/Ramadan/cover.jpg">
-    <meta property="og:description" content="مسبحة إلكترونية، مواقيت صلاة، وأذكار متجددة من تيليجرام.">
+    <meta property="og:description" content="مسبحة، مواقيت صلاة، وأذكار متجددة عبر تليجرام.">
 
     <link rel="manifest" href="manifest.json">
     <style>
@@ -25,50 +25,49 @@
         }
 
         .glass-panel {
-            background: rgba(10, 14, 23, 0.8);
+            background: rgba(10, 14, 23, 0.85);
             backdrop-filter: blur(15px);
             border: 1px solid var(--gold);
             border-radius: 25px;
             box-shadow: var(--neon);
             padding: 20px;
+            margin: 10px auto;
+            width: 90%;
         }
 
+        /* المسبحة */
         .circular-counter {
-            width: 200px; height: 200px; border-radius: 50%;
-            border: 6px solid var(--gold); margin: 30px auto;
+            width: 190px; height: 190px; border-radius: 50%;
+            border: 6px solid var(--gold); margin: 20px auto;
             display: flex; align-items: center; justify-content: center;
-            font-size: 4.5rem; box-shadow: var(--neon); cursor: pointer;
+            font-size: 4rem; box-shadow: var(--neon); cursor: pointer;
             background: var(--glass); transition: 0.2s;
         }
 
         .btn-neon {
-            background: var(--gold); color: white; border: none; padding: 10px 20px;
+            background: var(--gold); color: white; border: none; padding: 10px 15px;
             border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: var(--neon);
-            margin: 5px; transition: 0.3s;
+            margin: 5px; font-size: 0.9rem;
         }
 
-        .btn-reset {
-            background: rgba(255, 0, 0, 0.3); border: 1px solid red; color: white;
-            padding: 5px 15px; border-radius: 10px; cursor: pointer; margin-top: 10px;
-        }
+        /* سجل التسبيح */
+        #historyLog { max-height: 120px; overflow-y: auto; margin-top: 15px; font-size: 0.85rem; }
+        .log-item { display: flex; justify-content: space-between; padding: 5px; border-bottom: 1px solid rgba(184,134,11,0.2); }
 
-        #historyLog {
-            margin-top: 20px; max-height: 150px; overflow-y: auto;
-            background: rgba(0,0,0,0.5); border-radius: 15px; padding: 10px;
-        }
-
-        .history-item {
-            display: flex; justify-content: space-between; padding: 5px 10px;
-            border-bottom: 1px solid rgba(184, 134, 11, 0.2); font-size: 0.9rem;
-        }
-
+        /* التنقل السفلي */
         .nav-bar {
             position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.9);
             display: flex; justify-content: space-around; padding: 15px 0;
             border-top: 1px solid var(--gold); z-index: 1000;
         }
+        .nav-bar span { cursor: pointer; color: var(--gold); font-weight: bold; }
+        .nav-bar span.active { color: #fff; text-shadow: var(--neon); }
 
-        .page { padding: 40px 15px 120px; }
+        .page { padding: 40px 10px 120px; display: none; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        td { padding: 12px; border-bottom: 1px solid rgba(184,134,11,0.2); }
     </style>
 </head>
 <body>
@@ -76,85 +75,134 @@
     <header style="padding:15px; background:rgba(0,0,0,0.8); color:var(--gold); font-weight:bold; border-bottom: 1px solid var(--gold);">ISKAR</header>
 
     <main>
-        <section id="tasbihPage" class="page">
+        <section id="tasbihPage" class="page" style="display: block;">
             <div class="circular-counter" onclick="handleTasbih()">
                 <span id="displayNum">0</span>
             </div>
-            
             <h3 id="tasbihType" style="color: var(--gold);">سبحان الله</h3>
-            
-            <div style="margin-bottom: 15px;">
+            <div>
                 <button class="btn-neon" onclick="setMode('سبحان الله')">سبحان الله</button>
                 <button class="btn-neon" onclick="setMode('الحمد لله')">الحمد لله</button>
                 <button class="btn-neon" onclick="setMode('الله أكبر')">الله أكبر</button>
             </div>
-
-            <button class="btn-reset" onclick="resetCounter()">تصفير العداد 🔄</button>
-
+            <button onclick="resetCounter()" style="background:none; border:1px solid red; color:red; border-radius:10px; margin-top:10px; cursor:pointer;">تصفير العداد 🔄</button>
+            
             <div id="historyLog" class="glass-panel">
-                <div style="color: var(--gold); font-weight: bold; margin-bottom: 5px;">سجل التسبيح</div>
-                <div id="logItems">
-                    <p style="font-size: 0.8rem; color: #aaa;">لا توجد نتائج مسجلة بعد</p>
-                </div>
+                <div id="logItems"><p>ابدأ التسبيح ليظهر السجل هنا</p></div>
             </div>
 
-            <div style="margin-top: 20px; background: var(--glass); padding: 10px; border-radius: 15px;">
+            <div style="margin-top:15px;">
                 🔊 <input type="checkbox" id="soundToggle" checked> 
                 📳 <input type="checkbox" id="vibrateToggle" checked>
             </div>
         </section>
 
-        </main>
+        <section id="prayerPage" class="page">
+            <div class="glass-panel">
+                <select id="citySelect" onchange="getPrayerTimes()" style="width:100%; padding:10px; background:#000; color:var(--gold); border:1px solid var(--gold); border-radius:10px;">
+                    <option value="Cairo">القاهرة</option>
+                    <option value="Alexandria">الإسكندرية</option>
+                    <option value="Mansoura">المنصورة</option>
+                    <option value="Mecca">مكة المكرمة</option>
+                </select>
+                <table id="prayerTable"></table>
+            </div>
+            <div class="glass-panel">
+                <p>صوت الأذان:</p>
+                <select id="voiceSelect" onchange="saveVoice()" style="background:#000; color:#fff; padding:5px; border:1px solid var(--gold);">
+                    <option value="Egypt.mp3">Egyptian 1</option>
+                    <option value="Egypt_1.mp3">Egyptian 2</option>
+                </select>
+            </div>
+        </section>
+
+        <section id="azkarPage" class="page">
+            <div id="azkarContainer"></div>
+        </section>
+    </main>
 
     <nav class="nav-bar">
-        <span onclick="location.reload()">تحديث</span>
-        <span style="color: #fff; text-shadow: var(--neon);">المسبحة</span>
+        <span id="navTasbih" class="active" onclick="showPage('tasbih')">المسبحة</span>
+        <span id="navPrayer" onclick="showPage('prayer')">المواقيت</span>
+        <span id="navAzkar" onclick="showPage('azkar')">الأذكار</span>
     </nav>
 
     <script>
-        let count = 0;
-        let currentMode = "سبحان الله";
+        let count = 0, currentMode = "سبحان الله";
 
-        function setMode(m) {
-            if (count > 0) recordResult(); // سجل النتيجة الحالية قبل تغيير النوع
-            currentMode = m;
-            document.getElementById('tasbihType').innerText = m;
-            count = 0; 
-            document.getElementById('displayNum').innerText = count;
+        function showPage(p) {
+            document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
+            document.querySelectorAll('.nav-bar span').forEach(s => s.classList.remove('active'));
+            document.getElementById(p + 'Page').style.display = 'block';
+            document.getElementById('nav' + p.charAt(0).toUpperCase() + p.slice(1)).classList.add('active');
+            if(p === 'azkar') loadAzkar();
+            if(p === 'prayer') getPrayerTimes();
         }
 
+        // --- منطق المسبحة والسجل ---
+        function setMode(m) { if(count > 0) recordResult(); currentMode = m; document.getElementById('tasbihType').innerText = m; count = 0; updateDisplay(); }
         function handleTasbih() {
-            count++;
-            document.getElementById('displayNum').innerText = count;
-            if(document.getElementById('vibrateToggle').checked) navigator.vibrate(60);
-            if(document.getElementById('soundToggle').checked) {
-                let audio = new Audio('https://www.soundjay.com/buttons/sounds/button-16.mp3');
-                audio.volume = 0.2; audio.play().catch(()=>{});
-            }
+            count++; updateDisplay();
+            if(document.getElementById('vibrateToggle').checked) navigator.vibrate(50);
+            if(document.getElementById('soundToggle').checked) new Audio('https://www.soundjay.com/buttons/sounds/button-16.mp3').play().catch(()=>{});
         }
-
-        function resetCounter() {
-            if (count > 0) {
-                recordResult();
-                count = 0;
-                document.getElementById('displayNum').innerText = count;
-            }
-        }
-
+        function resetCounter() { if(count > 0) recordResult(); count = 0; updateDisplay(); }
+        function updateDisplay() { document.getElementById('displayNum').innerText = count; }
         function recordResult() {
-            const logItems = document.getElementById('logItems');
-            if (count === 0) return;
-            
-            // حذف نص "لا توجد نتائج" عند أول تسجيل
-            if (logItems.innerHTML.includes("لا توجد نتائج")) logItems.innerHTML = "";
-
-            const item = document.createElement('div');
-            item.className = 'history-item';
-            const now = new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
-            item.innerHTML = `<span>${currentMode}</span> <span>${count}</span> <span style="font-size:0.7rem; color:#888;">${now}</span>`;
-            
-            logItems.prepend(item); // إضافة النتيجة الجديدة في الأعلى
+            const log = document.getElementById('logItems');
+            if(log.innerHTML.includes("ابدأ التسبيح")) log.innerHTML = "";
+            const div = document.createElement('div'); div.className = 'log-item';
+            div.innerHTML = `<span>${currentMode}</span> <b>${count}</b>`;
+            log.prepend(div);
         }
+
+        // --- منطق الإمساكية (Online/Offline) ---
+        async function getPrayerTimes() {
+            const city = document.getElementById('citySelect').value;
+            const table = document.getElementById('prayerTable');
+            try {
+                const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Egypt&method=4`);
+                const data = await res.json();
+                const t = data.data.timings;
+                localStorage.setItem('iskar_offline_data', JSON.stringify(t));
+                renderTable(t);
+            } catch {
+                const cached = JSON.parse(localStorage.getItem('iskar_offline_data'));
+                if(cached) renderTable(cached);
+                else table.innerHTML = "<tr><td>يرجى الاتصال بالإنترنت أول مرة</td></tr>";
+            }
+        }
+        function renderTable(t) {
+            document.getElementById('prayerTable').innerHTML = `
+                <tr><td>الإمساك</td><td>${t.Imsak}</td></tr>
+                <tr><td>الفجر</td><td>${t.Fajr}</td></tr>
+                <tr><td>المغرب</td><td>${t.Maghrib}</td></tr>
+            `;
+        }
+
+        // --- منطق الأذكار وتحديث تليجرام (مرتبط بملف azkar_dynamic.json الناتج عن الـ YAML) ---
+        async function loadAzkar() {
+            let azkar = ["سبحان الله وبحمده", "أستغفر الله العظيم", "اللهم صلِ على محمد", "لا إله إلا الله", "الحمد لله"];
+            try {
+                // جلب الذكر الجديد الذي وضعه الـ Github Action في هذا الملف
+                const res = await fetch('azkar_dynamic.json');
+                if(res.ok) {
+                    const data = await res.json();
+                    if(data.newZikr) azkar.unshift("📢 ذكر جديد من تيليجرام: " + data.newZikr);
+                }
+            } catch(e) {}
+            document.getElementById('azkarContainer').innerHTML = azkar.map(z => `
+                <div class="glass-panel" style="text-align:right; border-right:4px solid var(--gold);">${z}</div>
+            `).join('');
+        }
+
+        function saveVoice() { localStorage.setItem('userVoice', document.getElementById('voiceSelect').value); }
+        
+        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+        window.onload = () => { 
+            const savedV = localStorage.getItem('userVoice');
+            if(savedV) document.getElementById('voiceSelect').value = savedV;
+        };
     </script>
 </body>
-                                                                                          </html>
+        </html>
