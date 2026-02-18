@@ -1,14 +1,14 @@
 {
-  "name": "Azkar Pro 2026",
-  "short_name": "Azkar",
-  "start_url": "index.html",
+  "name": "Ramadan App V2.0",
+  "short_name": "رمضان",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#f5f7fa",
-  "theme_color": "#00d2ff",
+  "background_color": "#008080",
+  "theme_color": "#008080",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/2972/2972354.png",
-      "sizes": "512x512",
+      "src": "https://via.placeholder.com/192",
+      "sizes": "192x192",
       "type": "image/png"
     }
   ]
