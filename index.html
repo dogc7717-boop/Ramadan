@@ -1,129 +1,79 @@
-/**
- * ISKAR - Ramadan Application 2026
- * Developed by: ISKAR (Sameh Elnady)
- */
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISKAR Ramadan PRO | 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #FFD700; --royal: #1a237e; --bg: #0a0e17; }
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Cairo', sans-serif; padding-bottom: 80px; }
+        .page { display: none; padding: 20px; text-align: center; }
+        .main-circle { width: 140px; height: 140px; border: 5px solid var(--gold); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 10px auto; background: rgba(255, 215, 0, 0.05); }
+        #counter { font-size: 2.8rem; color: #00ff88; font-weight: bold; }
+        .zekr-btn { width: 100%; background: var(--royal); border: 2px solid var(--gold); border-radius: 15px; padding: 15px; margin-bottom: 15px; cursor: pointer; color: white; outline: none; }
+        .zekr-label { color: gold; font-size: 1.3rem; display: block; font-weight: bold; }
+        .zekr-num { color: white; font-size: 1.8rem; font-weight: bold; display: block; margin-top: 5px; background: rgba(0,0,0,0.3); border-radius: 10px; }
+        nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 15px 0; border-top: 2px solid var(--gold); }
+        nav span { cursor: pointer; color: #777; font-size: 0.9rem; }
+        nav span.active { color: var(--gold); font-weight: bold; }
+        .btn-reset { width: 100%; padding: 12px; background: none; color: #ff4444; border: 1px solid #ff4444; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; }
+        select { width: 100%; padding: 12px; background: var(--royal); color: gold; border: 1px solid gold; border-radius: 10px; margin-bottom: 10px; font-family: 'Cairo'; }
+        table { width: 100%; margin-top: 15px; border-collapse: collapse; }
+        td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body>
 
-let count = 0, subhanCount = 0, alhamdCount = 0, akbarCount = 0;
-let deferredPrompt;
-let adhanPreviewAudio = new Audio();
+    <div id="subhaPage" class="page" style="display: block;">
+        <h2 style="color:gold;">المسبحة الإلكترونية</h2>
+        <div class="main-circle"><div id="counter">0</div></div>
+        
+        <div id="zekrGroup">
+            <button class="zekr-btn" onclick="specificZekr('subhan')">
+                <span class="zekr-label">سبحان الله</span>
+                <span id="subhanCount" class="zekr-num">0</span>
+            </button>
+            <button class="zekr-btn" onclick="specificZekr('alhamd')">
+                <span class="zekr-label">الحمد لله</span>
+                <span id="alhamdCount" class="zekr-num">0</span>
+            </button>
+            <button class="zekr-btn" onclick="specificZekr('akbar')">
+                <span class="zekr-label">الله أكبر</span>
+                <span id="akbarCount" class="zekr-num">0</span>
+            </button>
+        </div>
+        
+        <button class="btn-reset" onclick="resetAllCounters()">تصفير كافة العدادات</button>
+    </div>
 
-const azkarData = {
-    sabah: ["أصبحنا وأصبح الملك لله والحمد لله", "يا حي يا قيوم برحمتك أستغيث", "اللهم أنت ربي لا إله إلا أنت", "سبحان الله وبحمده عدد خلقه"],
-    massa: ["أمسين وأمسى الملك لله والحمد لله", "أعوذ بكلمات الله التامات من شر ما خلق", "اللهم بك أمسينا وبك أصبحنا", "اللهم عالم الغيب والشهادة"],
-    random: ["سبحان الله وبحمده", "اللهم صلِ وسلم على نبينا محمد", "أستغفر الله العظيم", "لا حول ولا قوة إلا بالله", "لا إله إلا الله"]
-};
+    <div id="prayerPage" class="page">
+        <h2 style="color:gold">المواقيت والأذان</h2>
+        <select id="citySelect" onchange="getPrayerTimes()">
+            <option value="Cairo">القاهرة</option>
+            <option value="Alexandria">الإسكندرية</option>
+            <option value="Mansoura">المنصورة</option>
+            <option value="Mecca">مكة المكرمة</option>
+        </select>
+        <div id="prayerTable"></div>
+        <div style="margin-top:20px; border:1px solid gold; padding:10px; border-radius:10px;">
+            <p style="color:gold;">صوت الأذان</p>
+            <select id="adhanSelect" onchange="saveAdhan()">
+                <option value="Egypt.mp3">أذان 1</option>
+                <option value="Egypt_1.mp3">أذان 2</option>
+                <option value="Egypt_2.mp3">أذان 3</option>
+                <option value="Egypt_3.mp3">أذان 4</option>
+            </select>
+            <button onclick="playAdhan()" style="width:100%; background:#28a745; color:white; border:none; padding:10px; border-radius:5px; margin-bottom:5px;">▶️ تجربة</button>
+            <button onclick="stopAdhan()" style="width:100%; background:#dc3545; color:white; border:none; padding:10px; border-radius:5px;">⏹️ إيقاف</button>
+        </div>
+    </div>
 
-function showPage(p) {
-    document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
-    document.querySelectorAll('nav span').forEach(s => s.classList.remove('active'));
-    document.getElementById(p + 'Page').style.display = 'block';
-    document.getElementById('nav' + p.charAt(0).toUpperCase() + p.slice(1)).classList.add('active');
-    if(p === 'azkar') loadAzkar();
-}
+    <nav>
+        <span id="navSubha" class="active" onclick="showPage('subha')">📿 المسبحة</span>
+        <span id="navPrayer" onclick="showPage('prayer')">🗓️ الإمساكية</span>
+    </nav>
 
-// --- المسبحة ---
-function addCount() {
-    count++;
-    document.getElementById('counter').innerText = count;
-    triggerFeedback();
-}
-
-function specificZekr(type) {
-    if(type === 'subhan') { subhanCount++; document.getElementById('subhanCount').innerText = subhanCount; document.getElementById('currentZekr').innerText = "سبحان الله"; }
-    else if(type === 'alhamd') { alhamdCount++; document.getElementById('alhamdCount').innerText = alhamdCount; document.getElementById('currentZekr').innerText = "الحمد لله"; }
-    else if(type === 'akbar') { akbarCount++; document.getElementById('akbarCount').innerText = akbarCount; document.getElementById('currentZekr').innerText = "الله أكبر"; }
-    count++; document.getElementById('counter').innerText = count;
-    triggerFeedback();
-}
-
-function triggerFeedback() {
-    if(document.getElementById('vibrateToggle').checked && navigator.vibrate) navigator.vibrate(50);
-    if(document.getElementById('soundToggle').checked) {
-        let audio = new Audio('https://assets.mixkit.co/active_storage/sfx/3005/3005-preview.mp3');
-        audio.volume = 0.2; audio.play().catch(()=>{});
-    }
-}
-
-function resetAllCounters() {
-    if(confirm("تصفير الكل؟")) {
-        count = 0; subhanCount = 0; alhamdCount = 0; akbarCount = 0;
-        ['counter','subhanCount','alhamdCount','akbarCount'].forEach(id => document.getElementById(id).innerText = 0);
-        document.getElementById('currentZekr').innerText = "انقر للبدء";
-    }
-}
-
-// --- الأذكار ---
-function loadAzkar() {
-    const h = new Date().getHours();
-    const isMorning = (h >= 5 && h < 12);
-    document.getElementById('azkarTitle').innerText = isMorning ? "☀️ أذكار الصباح" : "🌙 أذكار المساء";
-    let html = "";
-    const list = isMorning ? azkarData.sabah : azkarData.massa;
-    list.forEach(z => { html += `<div class="zekr-card">${z}</div>`; });
-    document.getElementById('azkarListContainer').innerHTML = html;
-}
-
-function showPopUp() {
-    if (!document.getElementById('autoAzkarToggle').checked) return;
-    const rand = azkarData.random[Math.floor(Math.random() * azkarData.random.length)];
-    document.getElementById('azkarPopText').innerText = rand;
-    document.getElementById('azkarOverlay').style.display = 'flex';
-}
-
-function closeAzkarWindow() { document.getElementById('azkarOverlay').style.display = 'none'; }
-
-// --- المواقيت والأذان ---
-async function getPrayerTimes() {
-    const city = document.getElementById('citySelect').value;
-    const tableDiv = document.getElementById('prayerTable');
-    tableDiv.innerHTML = "<p style='text-align:center'>جاري التحديث...</p>";
-    let country = "Egypt";
-    const countryMap = { "Mecca":"Saudi Arabia", "Medina":"Saudi Arabia", "Dubai":"UAE", "Jerusalem":"Palestine", "Paris":"France", "Madrid":"Spain", "Rome":"Italy", "New York":"USA" };
-    if(countryMap[city]) country = countryMap[city];
-
-    try {
-        const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=4`);
-        const data = await res.json();
-        const t = data.data.timings;
-        window.currentTimings = t;
-        tableDiv.innerHTML = `<table>
-            <tr class="highlight"><td>🕒 الإمساك</td><td>${t.Imsak}</td></tr>
-            <tr><td>الفجر</td><td>${t.Fajr}</td></tr><tr><td>الظهر</td><td>${t.Dhuhr}</td></tr>
-            <tr><td>العصر</td><td>${t.Asr}</td></tr><tr class="highlight"><td>🌅 المغرب</td><td>${t.Maghrib}</td></tr>
-            <tr><td>العشاء</td><td>${t.Isha}</td></tr></table>`;
-    } catch(e) { tableDiv.innerHTML = "<p style='color:red'>خطأ في التحميل</p>"; }
-}
-
-function saveAdhanPreference() { localStorage.setItem('userAdhanChoice', document.getElementById('adhanSelect').value); }
-
-function playAdhanPreview() {
-    adhanPreviewAudio.src = "./" + document.getElementById('adhanSelect').value;
-    adhanPreviewAudio.play().catch(() => alert("تأكد من وجود الملفات واضغط على الشاشة أولاً"));
-}
-
-function stopAdhanPreview() { adhanPreviewAudio.pause(); adhanPreviewAudio.currentTime = 0; }
-
-function checkPrayerTime() {
-    if (!window.currentTimings) return;
-    const now = new Date();
-    const timeNow = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-    ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"].forEach(p => {
-        if (window.currentTimings[p] === timeNow && now.getSeconds() === 0) {
-            new Audio("./" + (localStorage.getItem('userAdhanChoice') || 'Egypt.mp3')).play().catch(()=>{});
-        }
-    });
-}
-
-setInterval(checkPrayerTime, 1000);
-setInterval(() => { if (new Date().getMinutes() === 0 && new Date().getSeconds() < 2) showPopUp(); }, 1000);
-
-window.onload = () => {
-    getPrayerTimes();
-    const savedVoice = localStorage.getItem('userAdhanChoice');
-    if(savedVoice) document.getElementById('adhanSelect').value = savedVoice;
-    setTimeout(showPopUp, 3000);
-};
-
-// PWA
-window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
-document.getElementById('installBtn').onclick = () => { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; } };
+    <script src="script.js"></script>
+</body>
+            </html>
