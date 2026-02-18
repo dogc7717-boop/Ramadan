@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISKAR - تطبيق الأذكار والمواقيت</title>
+    <title>ISKAR</title>
 
     <meta property="og:title" content="ISKAR - تطبيقك الرمضاني">
     <meta property="og:image" content="https://dogc7717-boop.github.io/Ramadan/cover.jpg">
-    <meta property="og:description" content="مسبحة إلكترونية، مواقيت صلاة، وأذكار متجددة من تيليجرام.">
+    <meta property="og:description" content="مسبحة إلكترونية، مواقيت صلاة، وأذكار متجددة .">
     <meta property="og:type" content="website">
 
     <link rel="manifest" href="manifest.json">
@@ -83,12 +83,12 @@
         <div style="text-align: right; line-height: 1.8;">
             <p>1️⃣ <b>تفعيل الأذان:</b> وافق على طلب التنبيهات واضغط على الشاشة مرة واحدة عند فتح التطبيق.</p>
             <p>2️⃣ <b>خلفية النظام:</b> للحصول على أذان دقيق، يرجى استثناء التطبيق من "تحسين البطارية" في إعدادات هاتفك.</p>
-            <p>3️⃣ <b>التحديث:</b> التطبيق يحدث الأذكار تلقائياً من قناة تيليجرام.</p>
+            <p>3️⃣ <b>التحديث:</b> التطبيق يحدث الأذكار تلقائياً   .</p>
         </div>
         <button class="btn-neon" onclick="startInstall()">حمل التطبيق الآن</button>
     </div>
 
-    <button id="installBtn" class="btn-neon" style="display:none;">📥 تثبيت تطبيق ISKAR</button>
+    <button id="installBtn" class="btn-neon" style="display:none;">📥 تثبيت  ISKAR</button>
 
     <main>
         <section id="tasbihPage" class="page">
@@ -110,10 +110,19 @@
         <section id="prayerPage" class="page" style="display:none;">
             <select id="citySelect" onchange="getPrayerTimes()" style="padding:12px; border-radius:10px; background: #000; color: var(--gold); border: 1px solid var(--gold); width: 80%;">
                 <optgroup label="مصر">
+                    <option value="Cairo">طلعت مصطفى🏳🏴🏳</option>
+                    <option value="Cairo">قنا</option>
+                    <option value="Cairo">الاقصر</option>
+                    <option value="Cairo">اسوان</option>
+                    <option value="Cairo">المنصورة </option>
+                    <option value="Cairo">المحلة الكبرى</option>
                     <option value="Cairo">القاهرة</option>
                     <option value="Alexandria">الإسكندرية</option>
                 </optgroup>
                 <optgroup label="العالم">
+                    <option value="Dubai">تونس</option>
+                    <option value="Dubai">الجزائر</option>
+                    <option value="Dubai">فلسطين(القدس)</option>
                     <option value="Mecca">مكة المكرمة</option>
                     <option value="Dubai">دبي</option>
                 </optgroup>
@@ -124,6 +133,7 @@
                 <select id="voiceSelect" style="background:#000; color:#fff; border:1px solid var(--gold);">
                     <option value="Egypt.mp3">Egyptian 1</option>
                     <option value="Egypt_1.mp3">Egyptian 2</option>
+                    <option value="Egypt_2.mp3">Egyptian 3</option>
                 </select>
             </div>
         </section>
@@ -185,7 +195,10 @@
             document.getElementById('prayerTable').innerHTML = `
                 <tr><td>الإمساك</td><td>${t.Imsak}</td></tr>
                 <tr><td>الفجر</td><td>${t.Fajr}</td></tr>
-                <tr><td>المغرب</td><td>${t.Maghrib}</td></tr>
+                <tr><td>الظهر</td><td>${t.Doher}</td></tr>
+                 <tr><td>العصر</td><td>${t.Aser}</td></tr>
+                <tr><td>المغرب</td><td>${t.Maghreb}</td>
+                <tr><td>العشاء</td><td>${t.Eshaa}</td></tr>
             `;
         }
 
@@ -197,7 +210,7 @@
                 const res = await fetch('azkar_dynamic.json');
                 if(res.ok) {
                     const data = await res.json();
-                    if(data.newZikr) list.unshift("🌟 من تيليجرام: " + data.newZikr);
+                    if(data.newZikr) list.unshift("🌟 من iskar: " + data.newZikr);
                 }
             } catch(e) {}
             
