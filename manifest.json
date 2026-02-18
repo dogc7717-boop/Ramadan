@@ -1,9 +1,11 @@
- {
-  "name": "تطبيق رمضان",
-  "short_name": "رمضان",
-  "start_url": "index.html",
+{
+  "short_name": "ISKAR",
+  "name": "ISKAR - Ramadan 2026",
+  "icons": [
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#2c3e50",
-  "icons": [{"src": "icon.png", "sizes": "512x512", "type": "image/png"}]
- }
+  "theme_color": "#B8860B",
+  "background_color": "#0a0e17"
+}
