@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ISKAR - تطبيقك الرمضاني</title>
 
     <meta property="og:title" content="ISKAR - تطبيقك الرمضاني">
@@ -68,13 +68,51 @@
         .page { padding: 20px 15px 120px; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        table { width: 100%; margin-top: 20px; border-collapse: collapse; background: var(--glass); border-radius: 15px; overflow: hidden; }
-        td { padding: 12px; border-bottom: 1px solid rgba(184, 134, 11, 0.2); }
+        /* --- تنسيق الجدول المطور للموبايل --- */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto; /* يسمح بالتمرير الجانبي */
+            -webkit-overflow-scrolling: touch;
+            border-radius: 15px;
+            background: var(--glass);
+            border: 1px solid rgba(184, 134, 11, 0.3);
+            margin-top: 20px;
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            min-width: 500px; /* يضمن مساحة كافية للأرقام */
+        }
+
+        th, td { 
+            padding: 12px 8px; 
+            text-align: center;
+            border-bottom: 1px solid rgba(184, 134, 11, 0.2);
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        th {
+            background: rgba(184, 134, 11, 0.1);
+            color: var(--gold);
+            position: sticky;
+            top: 0;
+        }
+
+        .day-col {
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--gold);
+            font-weight: bold;
+            position: sticky;
+            right: 0; /* تثبيت عمود اليوم عند التمرير */
+            z-index: 10;
+        }
 
         /* ستايل المراقبة اللحظية */
         .clock-screen { padding: 15px; margin-bottom: 15px; }
         #live-clock { font-size: 2rem; font-weight: bold; color: var(--gold); text-shadow: var(--neon); }
-        .match-alert { background: var(--gold) !important; color: black !important; animation: pulse 1s infinite; }
+        .match-alert { background: var(--gold) !important; color: black !important; animation: pulse 1s infinite; font-weight: bold; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
     </style>
 </head>
@@ -114,20 +152,22 @@
                 <div id="status" style="font-size: 0.9rem; margin-top: 5px;">النظام يراقب الساعة الآن...</div>
             </div>
             
-            <table id="ramadanTable">
-                <thead>
-                    <tr>
-                        <th style="color:var(--gold); padding:10px;">اليوم</th>
-                        <th style="color:var(--gold); padding:10px;">إمساك</th>
-                        <th style="color:var(--gold); padding:10px;">فجر</th>
-                        <th style="color:var(--gold); padding:10px;">ظهر</th>
-                        <th style="color:var(--gold); padding:10px;">عصر</th>
-                        <th style="color:var(--gold); padding:10px;">مغرب</th>
-                        <th style="color:var(--gold); padding:10px;">عشاء</th>
-                    </tr>
-                </thead>
-                <tbody id="scheduleBody"></tbody>
-            </table>
+            <div class="table-wrapper">
+                <table id="ramadanTable">
+                    <thead>
+                        <tr>
+                            <th class="day-col">اليوم</th>
+                            <th>إمساك</th>
+                            <th>فجر</th>
+                            <th>ظهر</th>
+                            <th>عصر</th>
+                            <th>مغرب</th>
+                            <th>عشاء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleBody"></tbody>
+                </table>
+            </div>
             
             <button id="installBtn" class="btn-neon" style="display:none; margin: 20px auto;">📥 تثبيت ISKAR</button>
         </section>
@@ -150,6 +190,7 @@
         let audioContext;
         let isAudioReady = false;
 
+        // مصفوفة الـ 30 يوماً الكاملة
         const ramadanSchedule = [
             {day: "1 رمضان", times: ["4:56", "5:06", "12:09", "3:20", "5:45", "7:03"]},
             {day: "2 رمضان", times: ["4:55", "5:05", "12:09", "3:21", "5:46", "7:04"]},
@@ -157,7 +198,30 @@
             {day: "4 رمضان", times: ["4:53", "5:03", "12:09", "3:22", "5:47", "7:05"]},
             {day: "5 رمضان", times: ["4:53", "5:03", "12:09", "3:22", "5:48", "7:06"]},
             {day: "6 رمضان", times: ["4:52", "5:02", "12:08", "3:22", "5:49", "7:06"]},
-            {day: "7 رمضان", times: ["4:51", "5:01", "12:08", "3:23", "5:50", "7:07"]}
+            {day: "7 رمضان", times: ["4:51", "5:01", "12:08", "3:23", "5:50", "7:07"]},
+            {day: "8 رمضان", times: ["4:50", "5:00", "12:08", "3:23", "5:51", "7:08"]},
+            {day: "9 رمضان", times: ["4:49", "4:59", "12:08", "3:24", "5:51", "7:09"]},
+            {day: "10 رمضان", times: ["4:48", "4:58", "12:08", "3:24", "5:52", "7:09"]},
+            {day: "11 رمضان", times: ["4:47", "4:57", "12:07", "3:24", "5:53", "7:10"]},
+            {day: "12 رمضان", times: ["4:46", "4:56", "12:07", "3:25", "5:53", "7:11"]},
+            {day: "13 رمضان", times: ["4:44", "4:54", "12:07", "3:25", "5:54", "7:12"]},
+            {day: "14 رمضان", times: ["4:43", "4:53", "12:07", "3:25", "5:55", "7:12"]},
+            {day: "15 رمضان", times: ["4:42", "4:52", "12:06", "3:26", "5:55", "7:13"]},
+            {day: "16 رمضان", times: ["4:41", "4:51", "12:06", "3:26", "5:56", "7:14"]},
+            {day: "17 رمضان", times: ["4:40", "4:50", "12:06", "3:26", "5:57", "7:14"]},
+            {day: "18 رمضان", times: ["4:38", "4:48", "12:06", "3:27", "5:57", "7:15"]},
+            {day: "19 رمضان", times: ["4:37", "4:47", "12:05", "3:27", "5:58", "7:16"]},
+            {day: "20 رمضان", times: ["4:36", "4:46", "12:05", "3:27", "5:59", "7:17"]},
+            {day: "21 رمضان", times: ["4:35", "4:45", "12:05", "3:28", "5:59", "7:17"]},
+            {day: "22 رمضان", times: ["4:33", "4:43", "12:05", "3:28", "6:00", "7:18"]},
+            {day: "23 رمضان", times: ["4:32", "4:42", "12:04", "3:28", "6:01", "7:19"]},
+            {day: "24 رمضان", times: ["4:31", "4:41", "12:04", "3:29", "6:01", "7:19"]},
+            {day: "25 رمضان", times: ["4:30", "4:40", "12:04", "3:29", "6:02", "7:20"]},
+            {day: "26 رمضان", times: ["4:28", "4:38", "12:04", "3:29", "6:03", "7:21"]},
+            {day: "27 رمضان", times: ["4:27", "4:37", "12:03", "3:29", "6:03", "7:21"]},
+            {day: "28 رمضان", times: ["4:26", "4:36", "12:03", "3:30", "6:04", "7:22"]},
+            {day: "29 رمضان", times: ["4:25", "4:35", "12:03", "3:30", "6:05", "7:23"]},
+            {day: "30 رمضان", times: ["4:23", "4:33", "12:03", "3:30", "6:05", "7:24"]}
         ];
 
         function showPage(p) {
@@ -211,7 +275,7 @@
             const tbody = document.getElementById('scheduleBody');
             tbody.innerHTML = "";
             ramadanSchedule.forEach((item, dIdx) => {
-                let row = `<tr><td style="color:var(--gold)">${item.day}</td>`;
+                let row = `<tr><td class="day-col">${item.day}</td>`;
                 item.times.forEach((time, tIdx) => {
                     row += `<td id="cell-${dIdx}-${tIdx}">${time}</td>`;
                 });
@@ -280,4 +344,4 @@
         };
     </script>
 </body>
-</html>
+    </html>
